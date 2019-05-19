@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <script src="/js/src/photoswipe.min.js?v="></script>
+  <script src="/js/src/photoswipe-ui-default.min.js?v="></script>
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/fancybox/source/jquery.fancybox.css">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"always","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="原理 此按摩椅由四部分组成：   按摩椅硬件 单片机（后续文章中以U表示） 4G模块（后续文章中以M表示） 阿里云服务器（后续文章中以S表示）   单片机的功能主要是控制按摩椅操作，比如力度，手法等。使用串口与4G模块通讯。 4G模块的功能主要是与服务器进行通讯，接收服务器指令，通过串口下发指令到下位机  硬件接口  数据通信格式单片机-&amp;gt;4G模块指令概括 SOI(1)+ACK/CMD(1)">
+<meta name="keywords" content="mqtt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="按摩椅项目">
+<meta property="og:url" content="http://www.iliuqi.com/2019/05/14/按摩椅项目/index.html">
+<meta property="og:site_name" content="小白成长记">
+<meta property="og:description" content="原理 此按摩椅由四部分组成：   按摩椅硬件 单片机（后续文章中以U表示） 4G模块（后续文章中以M表示） 阿里云服务器（后续文章中以S表示）   单片机的功能主要是控制按摩椅操作，比如力度，手法等。使用串口与4G模块通讯。 4G模块的功能主要是与服务器进行通讯，接收服务器指令，通过串口下发指令到下位机  硬件接口  数据通信格式单片机-&amp;gt;4G模块指令概括 SOI(1)+ACK/CMD(1)">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.iliuqi.com/2019/05/14/按摩椅项目/4G模块实物图.png">
+<meta property="og:image" content="http://www.iliuqi.com/2019/05/14/按摩椅项目/单片机实物图.png">
+<meta property="og:updated_time" content="2019-05-19T01:38:19.858Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="按摩椅项目">
+<meta name="twitter:description" content="原理 此按摩椅由四部分组成：   按摩椅硬件 单片机（后续文章中以U表示） 4G模块（后续文章中以M表示） 阿里云服务器（后续文章中以S表示）   单片机的功能主要是控制按摩椅操作，比如力度，手法等。使用串口与4G模块通讯。 4G模块的功能主要是与服务器进行通讯，接收服务器指令，通过串口下发指令到下位机  硬件接口  数据通信格式单片机-&amp;gt;4G模块指令概括 SOI(1)+ACK/CMD(1)">
+<meta name="twitter:image" content="http://www.iliuqi.com/2019/05/14/按摩椅项目/4G模块实物图.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://www.iliuqi.com/2019/05/14/按摩椅项目/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>按摩椅项目 | 小白成长记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/liuqi605752176" class="github-corner" aria-label="View source on
+	GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; top: 0; border: 0;
+		right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142
+		L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6
+		119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3
+		123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9
+		134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5
+		119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0
+		127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4
+		163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6
+		187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2
+		216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4
+		203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1
+		C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7
+		141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover
+.octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes
+octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media
+(max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner
+	.octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小白成长记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-相册">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/photos" rel="section"><i class="menu-item-icon fa fa-fw fa-camera"></i> <br>相册</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.iliuqi.com/2019/05/14/按摩椅项目/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="liuqi">
+      <meta itemprop="description" content="男儿何不带吴钩，收取关山五十州">
+      <meta itemprop="image" content="/images/personal.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小白成长记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">按摩椅项目
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-14 12:19:16" itemprop="dateCreated datePublished" datetime="2019-05-14T12:19:16+00:00">2019-05-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-19 01:38:19" itemprop="dateModified" datetime="2019-05-19T01:38:19+00:00">2019-05-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/linux应用/" itemprop="url" rel="index"><span itemprop="name">linux应用</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><blockquote>
+<p>此按摩椅由四部分组成：</p>
+</blockquote>
+<ol>
+<li>按摩椅硬件</li>
+<li>单片机（后续文章中以U表示）</li>
+<li>4G模块（后续文章中以M表示）</li>
+<li>阿里云服务器（后续文章中以S表示）</li>
+</ol>
+<blockquote>
+<p>单片机的功能主要是控制按摩椅操作，比如力度，手法等。使用串口与4G模块通讯。</p>
+<p>4G模块的功能主要是与服务器进行通讯，接收服务器指令，通过串口下发指令到下位机</p>
+</blockquote>
+<h2 id="硬件接口"><a href="#硬件接口" class="headerlink" title="硬件接口"></a>硬件接口</h2><p><img src="4G模块实物图.png" alt="4G模块实物图"></p>
+<p><img src="单片机实物图.png" alt="单片机实物图"></p>
+<h2 id="数据通信格式"><a href="#数据通信格式" class="headerlink" title="数据通信格式"></a>数据通信格式</h2><h3 id="单片机-gt-4G模块"><a href="#单片机-gt-4G模块" class="headerlink" title="单片机-&gt;4G模块"></a>单片机-&gt;4G模块</h3><h4 id="指令概括"><a href="#指令概括" class="headerlink" title="指令概括"></a>指令概括</h4><blockquote>
+<p>SOI(1)+ACK/CMD(1)+PARAMETER(10)+EOI(1)</p>
+</blockquote>
+<blockquote>
+<p>解析：</p>
+<p> SOI:开始字节，固定为0X7E</p>
+<p>CMD:(0x00：获取设备运行状态，0x01:零重力，0x02:升降调节，0x03:气压档位调节)，0x04:背部按摩力度</p>
+<p>PARAMETER   参数</p>
+<p>EOI:结束字节，  固定为0X5A</p>
+<p>ACK:应答最高2位表示用户单片机对命令的执行结果：00：执行成功 01：命令错误 10：参数错误 11：其它错误低6位的值与接收到的CMD值相等。</p>
+</blockquote>
+<h4 id="具体通信协议"><a href="#具体通信协议" class="headerlink" title="具体通信协议"></a>具体通信协议</h4><table>
+<thead>
+<tr>
+<th style="text-align:center">功能</th>
+<th style="text-align:center">方向</th>
+<th style="text-align:center">SOI</th>
+<th style="text-align:center">CMD</th>
+<th style="text-align:center">P1</th>
+<th style="text-align:center">P2</th>
+<th style="text-align:center">P3</th>
+<th style="text-align:center">P4</th>
+<th style="text-align:center">P5</th>
+<th style="text-align:center">P6</th>
+<th style="text-align:center">P7</th>
+<th style="text-align:center">P8</th>
+<th style="text-align:center">P9</th>
+<th style="text-align:center">P10</th>
+<th style="text-align:center">EOI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">获取设备运行状态</td>
+<td style="text-align:center">M-&gt;U</td>
+<td style="text-align:center">7E</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">5A</td>
+</tr>
+<tr>
+<td style="text-align:center">设备运行状态响应</td>
+<td style="text-align:center">U-&gt;M</td>
+<td style="text-align:center">7E</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">TI</td>
+<td style="text-align:center">T2</td>
+<td style="text-align:center">气压（1-10）</td>
+<td style="text-align:center">按摩力度（1-10）</td>
+<td style="text-align:center">零重力（0-3）</td>
+<td style="text-align:center">背部升降（0-2）</td>
+<td style="text-align:center">腿部升降（0-2）</td>
+<td style="text-align:center">按摩状态（0-2）</td>
+<td style="text-align:center">有人检测（0-1）</td>
+<td style="text-align:center">设备音量（0-10）</td>
+<td style="text-align:center">5A</td>
+</tr>
+<tr>
+<td style="text-align:center">零重力</td>
+<td style="text-align:center">M-&gt;U</td>
+<td style="text-align:center">7E</td>
+<td style="text-align:center">01</td>
+<td style="text-align:center">0-3</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">5A</td>
+</tr>
+<tr>
+<td style="text-align:center">升降调节</td>
+<td style="text-align:center">M-&gt;U</td>
+<td style="text-align:center">7E</td>
+<td style="text-align:center">02</td>
+<td style="text-align:center">0-3</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">5A</td>
+</tr>
+<tr>
+<td style="text-align:center">气压</td>
+<td style="text-align:center">M-&gt;U</td>
+<td style="text-align:center">7E</td>
+<td style="text-align:center">03</td>
+<td style="text-align:center">1-10</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">5A</td>
+</tr>
+<tr>
+<td style="text-align:center">按摩力度</td>
+<td style="text-align:center">M-&gt;U</td>
+<td style="text-align:center">7E</td>
+<td style="text-align:center">04</td>
+<td style="text-align:center">1-10</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">5A</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4G模块-gt-服务器"><a href="#4G模块-gt-服务器" class="headerlink" title="4G模块-&gt;服务器"></a>4G模块-&gt;服务器</h3><h4 id="指令概括-1"><a href="#指令概括-1" class="headerlink" title="指令概括"></a>指令概括</h4><blockquote>
+<p>代码中封装了一个结构体，作为一个MSG在两者之间传输。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">uart_msg</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> type; <span class="comment">//类型</span></span><br><span class="line">    <span class="keyword">int</span> hex_no; <span class="comment">//指令编号</span></span><br><span class="line">    <span class="keyword">int</span> value; <span class="comment">// 指令数值</span></span><br><span class="line">    <span class="keyword">int</span> data; <span class="comment">//每条指令的调节，比如按摩力度的各种档位</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="具体通信协议-1"><a href="#具体通信协议-1" class="headerlink" title="具体通信协议"></a>具体通信协议</h4><table>
+<thead>
+<tr>
+<th style="text-align:center">指令</th>
+<th style="text-align:center">type</th>
+<th style="text-align:center">no</th>
+<th style="text-align:center">value</th>
+<th style="text-align:center">data</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">授权指令</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">100</td>
+<td style="text-align:center">100</td>
+<td style="text-align:center">\</td>
+<td style="text-align:center">指令1为授权指令，时间为value</td>
+</tr>
+<tr>
+<td style="text-align:center">重启指令</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">\</td>
+<td style="text-align:center">指令2为重启指令，no和value无效</td>
+</tr>
+<tr>
+<td style="text-align:center">暂停/启动</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0/1</td>
+<td style="text-align:center">\</td>
+<td style="text-align:center">指令3为暂停启动指令，value为1时暂停，为0时启动</td>
+</tr>
+<tr>
+<td style="text-align:center">心跳包</td>
+<td style="text-align:center">102</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">xx</td>
+<td style="text-align:center">\</td>
+<td style="text-align:center">第一个x表示椅子是否在动，第二个x表示椅子上是否有人</td>
+</tr>
+<tr>
+<td style="text-align:center">零重力指令</td>
+<td style="text-align:center">999</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0-3</td>
+<td style="text-align:center">零重力角度0-3</td>
+</tr>
+<tr>
+<td style="text-align:center">升降调节</td>
+<td style="text-align:center">999</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">0-3</td>
+<td style="text-align:center">背部以及腿部调节0-3</td>
+</tr>
+<tr>
+<td style="text-align:center">气压调节</td>
+<td style="text-align:center">999</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">1-10</td>
+<td style="text-align:center">数值越大，力度越强</td>
+</tr>
+<tr>
+<td style="text-align:center">背部摩擦</td>
+<td style="text-align:center">999</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">1-10</td>
+<td style="text-align:center">数值越大，力度越强</td>
+</tr>
+<tr>
+<td style="text-align:center">音量调节</td>
+<td style="text-align:center">999</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">0-10</td>
+<td style="text-align:center">数值越大，音量越大</td>
+</tr>
+<tr>
+<td style="text-align:center">按摩手法</td>
+<td style="text-align:center">999</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">1-10</td>
+<td style="text-align:center">表示不同手法</td>
+</tr>
+</tbody>
+</table>
+<h1 id="代码简述"><a href="#代码简述" class="headerlink" title="代码简述"></a>代码简述</h1><blockquote>
+<p>代码从阿里云sdk/examples/linux/mqtt/demo.c开始</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> &#123;</span><br><span class="line">    TYPE_SERVER_CTL             = <span class="number">1</span>,    <span class="comment">//请求授权</span></span><br><span class="line">    TYPE_SERVER_CMD_REBOOT      = <span class="number">2</span>,    <span class="comment">//重启</span></span><br><span class="line">    TYPE_SERVER_START_OR_PAUSE  = <span class="number">3</span>,    <span class="comment">//开启或暂停</span></span><br><span class="line"></span><br><span class="line">    TYPE_CLIENT_CTL_RESPONED    = <span class="number">101</span>,</span><br><span class="line">    TYPE_CLIENT_HEARTBEAT       = <span class="number">102</span>,</span><br><span class="line">    TYPE_CLIENT_READY           = <span class="number">103</span>,</span><br><span class="line"></span><br><span class="line">    TYPE_SERVER_OPERATE         = <span class="number">999</span>,  <span class="comment">//新增第三方指令集</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//第三方功能集（服务器-&gt;模块）ser_msg.value</span></span><br><span class="line"><span class="keyword">enum</span> &#123;</span><br><span class="line">    ZERO_GRAVITY                = <span class="number">2</span>,    <span class="comment">//零重力</span></span><br><span class="line">    ELEVATING_REGULATION        = <span class="number">3</span>,    <span class="comment">//升降调节</span></span><br><span class="line">    BAROMETRIC_GEAR_REGULATION  = <span class="number">4</span>,    <span class="comment">//气压档位调节</span></span><br><span class="line">    BACK_MASSAGE_STRENRTH       = <span class="number">5</span>,    <span class="comment">//背部按摩调节</span></span><br><span class="line">    REMOTE_VOLUME_CONTROL       = <span class="number">6</span>,    <span class="comment">//音量调节</span></span><br><span class="line">    MASSAGE_TECHNIQUE           = <span class="number">7</span>,    <span class="comment">//按摩手法</span></span><br><span class="line"><span class="comment">//  REMOTE_VOICE_SWITCH         = 8,    //远程语音播放内容</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>上述为定义的指令集</p>
+</blockquote>
+<blockquote>
+<p>服务器与4G模块的通讯函数是massageArived函数</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**********************************************************************</span></span><br><span class="line"><span class="comment"> *            接收消息的回调函数</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 说明：当其它设备的消息到达时，此函数将被执行。</span></span><br><span class="line"><span class="comment"> * 注意：此回调函数中用户在做业务处理时不要使用耗时操作，否则会阻塞接收通道</span></span><br><span class="line"><span class="comment"> **********************************************************************/</span> </span><br><span class="line"><span class="comment">//Server -&gt; Client包 ,服务器下发的控制报(重启包/授权包...) </span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">messageArrived</span><span class="params">(MessageData *md)</span>                               </span></span><br><span class="line"><span class="function"></span>&#123;                                                                          </span><br><span class="line">    <span class="comment">//接收消息缓存                                                        </span></span><br><span class="line"> 	<span class="keyword">char</span> msg[MSG_LEN_MAX] = &#123;<span class="number">0</span>&#125;;                                             </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">uart_msg</span> <span class="title">ser_msg</span>;</span>                                            	 </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">uart_msg</span> <span class="title">respond_msg</span>;</span>                                        	</span><br><span class="line">    <span class="comment">//发送第三方操作指令调用</span></span><br><span class="line">    <span class="keyword">char</span> cmd[<span class="number">11</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">char</span> parm[AMY_PARM_LEN] = &#123;<span class="number">0</span>&#125;;                                                                     <span class="keyword">int</span> status = <span class="number">-1</span>;                                                                                   MQTTMessage *message = md-&gt;message;                                                                 <span class="keyword">if</span>(message-&gt;payloadlen &gt; MSG_LEN_MAX - <span class="number">1</span>)                                                           &#123;                                                                                                       <span class="built_in">printf</span>(<span class="string">"process part of receive message\n"</span>);                                                       message-&gt;payloadlen = MSG_LEN_MAX - <span class="number">1</span>;                                                         &#125;                                                                                                   <span class="comment">//复制接收消息到本地缓存 </span></span><br><span class="line">    <span class="built_in">memcpy</span>(msg,message-&gt;payload,message-&gt;payloadlen);                                                   <span class="comment">//to-do此处可以增加用户自己业务逻辑，例如：开关灯等操作   </span></span><br><span class="line">    <span class="comment">//打印接收消息   </span></span><br><span class="line">    IOT_LOG(<span class="string">"###################################\n"</span>);                                                   IOT_LOG(<span class="string">"subscribe Message: [%s]\n"</span>, msg);                                                         IOT_LOG(<span class="string">"###################################\n"</span>);                                                   <span class="keyword">if</span> (parse_server_message(msg, &amp;ser_msg) != TRUE_IOT)                                               &#123;                                                                                                       <span class="built_in">printf</span>(<span class="string">"subscribe Message: not a valied uart cmd or data messages, ignore this\n"</span>);                 <span class="keyword">return</span>;                                                                                         &#125;                                                                                                     <span class="comment">//授权指令，value有效，data无效</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (ser_msg.type == TYPE_SERVER_CTL)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"subscribe Message: authorization or not\n"</span>);</span><br><span class="line">        respond_msg.type = TYPE_CLIENT_CTL_RESPONED;</span><br><span class="line">        <span class="comment">//respond_msg.hex_no = 0x100;</span></span><br><span class="line">        respond_msg.hex_no = ser_msg.hex_no;</span><br><span class="line">        respond_msg.value = <span class="number">0</span>; <span class="comment">//1: process successful, 0:process failed.</span></span><br><span class="line">        <span class="keyword">if</span> (uart_ctl_trans(uart_fd, ser_msg.value) &gt;= <span class="number">0</span>)</span><br><span class="line">        &#123;                                                                                                       respond_msg.value = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pub_uart_msg(&amp;client, &amp;respond_msg);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//暂停与继续指令</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(ser_msg.type == TYPE_SERVER_START_OR_PAUSE)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"subscribe Message: start or pause!\n"</span>);</span><br><span class="line">        cmd[<span class="number">0</span>] = <span class="number">0x07</span>;</span><br><span class="line">        cmd[<span class="number">1</span>] = ser_msg.value;</span><br><span class="line">        status = uart_data_trans(uart_fd, cmd, parm);</span><br><span class="line">        <span class="keyword">if</span> (status &lt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            IOT_LOG(<span class="string">"Third-party directives send error: please check!\n"</span>);</span><br><span class="line">            <span class="keyword">return</span> ;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//第三方指令</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(ser_msg.type == TYPE_SERVER_OPERATE)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Operate Message: ser_msg.value = %d,ser_msg.hex_no = %d,ser_msg.data = %d\n"</span>,</span><br><span class="line">                                            ser_msg.value,ser_msg.hex_no,ser_msg.data);</span><br><span class="line">        <span class="comment">//模块到单片机的指令值比服务器到模块的指令少1</span></span><br><span class="line">        <span class="comment">//第三方指令2,3,4,5,6,7对应于C-&gt;U:1,2,3,4,5,6</span></span><br><span class="line">        <span class="comment">//ZERO_GRAVITY                  = 2,    //零重力</span></span><br><span class="line">        <span class="comment">//ELEVATING_REGULATION          = 3,    //升降调节</span></span><br><span class="line">        <span class="comment">//BAROMETRIC_GEAR_REGULATION    = 4,    //气压档位调节</span></span><br><span class="line">        <span class="comment">//BACK_MASSAGE_STRENRTH         = 5,    //背部按摩调节</span></span><br><span class="line">        <span class="comment">//REMOTE_VOLUME_CONTROL         = 6,    //音量调节</span></span><br><span class="line">        <span class="comment">//MASSAGE_TECHNIQUE             = 7,    //按摩手法</span></span><br><span class="line">        <span class="keyword">if</span>(ser_msg.value == ZERO_GRAVITY || ser_msg.value == ELEVATING_REGULATION || ser_msg.value == BAROMETRIC_GEAR_REGULATION</span><br><span class="line">                        || ser_msg.value == BACK_MASSAGE_STRENRTH || ser_msg.value == REMOTE_VOLUME_CONTROL || ser_msg.value == MASSAGE_TECHNIQUE)</span><br><span class="line">        &#123;</span><br><span class="line">            cmd[<span class="number">0</span>] = ser_msg.value - <span class="number">1</span>;</span><br><span class="line">            cmd[<span class="number">1</span>] = ser_msg.data;</span><br><span class="line">            status = uart_data_trans(uart_fd, cmd, parm);</span><br><span class="line">            <span class="keyword">if</span> (status &lt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                IOT_LOG(<span class="string">"Third-party directives send error: please check!\n"</span>);</span><br><span class="line">                <span class="keyword">return</span> ;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;                                                                                               &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里面涉及的就是将服务器发送过来的数据重新封装从串口发送给下位单片机！</p>
+<p>uart_data_trans()函数: 将数据包发送到单片机</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/************************</span></span><br><span class="line"><span class="comment">send to uart len is 24Bytes. = 1+ 22 + 1</span></span><br><span class="line"><span class="comment">but parse format like: 0x7E(1)+CMD|ACK(1)+PARM(10)+0x5A(1) = 13Bytes</span></span><br><span class="line"><span class="comment">**************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">uart_data_trans</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">char</span> *cmd, <span class="keyword">char</span>* out)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> command = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> ack = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> buf[UART_DATA_SIZE] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    buf[<span class="number">0</span>] = <span class="number">0x7E</span>; <span class="comment">//SOI</span></span><br><span class="line">    buf[UART_DATA_SIZE<span class="number">-1</span>] = <span class="number">0x5A</span>; <span class="comment">//EOI</span></span><br><span class="line">                                                                                                       <span class="keyword">if</span> (fd &lt; <span class="number">0</span> || !cmd)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>; </span><br><span class="line">    command = cmd[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//memcpy(buf+1, cmd, UART_DATA_SIZE-2);//CMD(1Byte) + PARM(10Bytes)</span></span><br><span class="line">    <span class="keyword">for</span> (i =<span class="number">0</span>; i &lt; (UART_DATA_SIZE<span class="number">-2</span>)/<span class="number">2</span>; i++)</span><br><span class="line">    &#123;   </span><br><span class="line">        buf[<span class="number">1</span>+i*<span class="number">2</span>] = cmd[i] &gt;&gt; <span class="number">4</span>;</span><br><span class="line">        buf[<span class="number">1</span>+i*<span class="number">2</span>+<span class="number">1</span>] = cmd[i]&amp;<span class="number">0xf</span>;</span><br><span class="line">    &#125;   </span><br><span class="line"></span><br><span class="line">    ret = uart_send(fd, buf, UART_DATA_SIZE);</span><br><span class="line">    <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;   </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%s(): uart_send() failed\n"</span> ,__FUNCTION__);</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;   </span><br><span class="line">    <span class="built_in">memset</span>(buf, <span class="number">0</span> , UART_DATA_SIZE);</span><br><span class="line">    ret = uart_recv(fd, buf, UART_DATA_SIZE);                                                           <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;   </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%s(): uart_recv() failed\n"</span>,__FUNCTION__);</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;   </span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (buf[<span class="number">0</span>] != <span class="number">0x7E</span> || buf[UART_DATA_SIZE<span class="number">-1</span>] != <span class="number">0x5A</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"uart data recv format error: first bytes=0x%02x, end byte=[0x%02x]"</span>, buf[<span class="number">0</span>],buf[UART_DATA_SIZE<span class="number">-1</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">   	ack = (buf[<span class="number">1</span>]&lt;&lt;<span class="number">4</span>) | (buf[<span class="number">2</span>]&amp;<span class="number">0xf</span>);                                                                                                                                                                      <span class="keyword">if</span> ((ack &amp; ACK_CMD_MASK) != command)</span><br><span class="line">   	 &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"uart data ack format error: command =0x%02x, ack cmd =[0x%02x]"</span>, command, (ack &amp; ACK_CMD_MASK));</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> ((ack&gt;&gt;<span class="number">6</span>) != ACK_AMY_SUCCESS)</span><br><span class="line">     &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"uart data ack error: [%d(1:cmd err, 2:parm err, 3:other err)]"</span>, (ack&gt;&gt;<span class="number">6</span>));</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     ret = <span class="number">0</span>;</span><br><span class="line">     <span class="keyword">for</span> (i =<span class="number">0</span>; i &lt; AMY_PARM_LEN; i++)</span><br><span class="line">     &#123;</span><br><span class="line">         out[i] = (buf[<span class="number">3</span>+i*<span class="number">2</span>] &lt;&lt; <span class="number">4</span>) | (buf[<span class="number">3</span>+i*<span class="number">2</span>+<span class="number">1</span>]&amp;<span class="number">0xf</span>);</span><br><span class="line">         <span class="keyword">if</span> (debug)</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"(%02x%02x)[%02x] "</span>,buf[<span class="number">3</span>+i*<span class="number">2</span>], buf[<span class="number">3</span>+i*<span class="number">2</span>+<span class="number">1</span>], out[i]);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span> (debug)</span><br><span class="line">     &#123;</span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">"\n#########parse parms 20Bytes to 10Byte\n"</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     IOT_LOG(<span class="string">"%s(): successful, ret=[%d]\n"</span> ,__FUNCTION__, ret);</span><br><span class="line">     <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这上面的函数就是发送数据包到单片机</p>
+</blockquote>
+<blockquote>
+<p>parse_server_message()函数：解析服务器发送过来的原始数据填充到struct uart_msg结构体</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">parse_server_message</span><span class="params">(<span class="keyword">char</span>* msg_buf, struct uart_msg *msg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!msg_buf || !msg)</span><br><span class="line">        <span class="keyword">return</span> FALSE_IOT;                                                                                <span class="comment">//"&#123;\"type\":1, \"no\":10, \"value\":\"0\", \"data\":10,  \"code\":null&#125;"</span></span><br><span class="line">    <span class="keyword">char</span> *p = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">char</span> *dilem = <span class="string">","</span>;  </span><br><span class="line">    <span class="keyword">char</span> *remain = <span class="literal">NULL</span>;  </span><br><span class="line">    <span class="keyword">char</span> *src = msg_buf;</span><br><span class="line">    <span class="keyword">char</span> *tmp = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">char</span> *p2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>; </span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">NULL</span> != ( p = strtok_r(src, dilem, &amp;remain) ))   </span><br><span class="line">    &#123;    </span><br><span class="line">        <span class="comment">//printf("p[%s],remain[%s]\n",p, remain);</span></span><br><span class="line">        src = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">if</span> ((tmp = <span class="built_in">strchr</span>(p, <span class="string">':'</span>)) != <span class="literal">NULL</span>)</span><br><span class="line">        &#123;    </span><br><span class="line">            i++; </span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">strstr</span>(p, <span class="string">"type"</span>))</span><br><span class="line">            &#123;    </span><br><span class="line">                msg-&gt;type = atoi(tmp+<span class="number">1</span>);</span><br><span class="line">            &#125;    </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strstr</span>(p, <span class="string">"no"</span>))</span><br><span class="line">            &#123;    </span><br><span class="line">                msg-&gt;hex_no = strtol(tmp+<span class="number">1</span>, <span class="literal">NULL</span>, <span class="number">16</span>);<span class="comment">//hex type</span></span><br><span class="line">            &#125;    </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strstr</span>(p, <span class="string">"value"</span>))</span><br><span class="line">            &#123;    </span><br><span class="line">                <span class="keyword">if</span> ((p2 = <span class="built_in">strchr</span>(tmp+<span class="number">1</span>, <span class="string">'\"'</span>)) != <span class="literal">NULL</span> || (p2 = <span class="built_in">strchr</span>(tmp+<span class="number">1</span>, <span class="string">'\''</span>)) != <span class="literal">NULL</span>)</span><br><span class="line">                &#123;<span class="comment">//value parsed type string.</span></span><br><span class="line">                    msg-&gt;value = atoi(p2+<span class="number">1</span>);</span><br><span class="line">                &#125;    </span><br><span class="line">                <span class="keyword">else</span> </span><br><span class="line">                &#123;<span class="comment">//value parsed type int.</span></span><br><span class="line">                    msg-&gt;value = atoi(tmp+<span class="number">1</span>);</span><br><span class="line">                &#125;    </span><br><span class="line">            &#125;    </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(<span class="built_in">strstr</span>(p, <span class="string">"data"</span>)) </span><br><span class="line">            &#123;    </span><br><span class="line">                msg-&gt;data = atoi(tmp+<span class="number">1</span>); </span><br><span class="line">            &#125; </span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">            &#123; </span><br><span class="line">                <span class="comment">//invalid json key </span></span><br><span class="line">                i--; </span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (i &lt; <span class="number">3</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%s(): Error:lose parameter, i=[%d] less than 3!\n"</span>, __FUNCTION__, i);</span><br><span class="line">        <span class="keyword">return</span> FALSE_IOT;</span><br><span class="line">    &#125;</span><br><span class="line">    IOT_LOG(<span class="string">"%s(): parse end:type=[%d], no=[%x], value:[\"%d\"], data:[%x]\n"</span>, __FUNCTION__, msg-&gt;type, msg-&gt;hex_no, msg-&gt;value, msg-&gt;data);</span><br><span class="line">    <span class="keyword">return</span> TRUE_IOT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>原始数据是 type:1, no:10, value:0, data:10,  code:null</p>
+<p>所以以“，”作为分隔，“：”再次分隔可得到相应的数据</p>
+</blockquote>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><blockquote>
+<p>本次修改是基于阿里云iot-sdk下运行的，所以关于mqtt代码都是现成的，有兴趣可以查看相关的源码</p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>liuqi</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://www.iliuqi.com/2019/05/14/按摩椅项目/" title="按摩椅项目">http://www.iliuqi.com/2019/05/14/按摩椅项目/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mqtt/" rel="tag"><i class="fa fa-tag"></i> mqtt</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/14/wlan-firmware-log/" rel="next" title="wlan firmware log">
+                <i class="fa fa-chevron-left"></i> wlan firmware log
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zOTQzMS8xNTk1OA=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/personal.gif" alt="liuqi">
+            
+              <p class="site-author-name" itemprop="name">liuqi</p>
+              <div class="site-description motion-element" itemprop="description">男儿何不带吴钩，收取关山五十州</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/liuqi605752176" title="GitHub &rarr; https://github.com/liuqi605752176" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liuqi605752176@outlook.com" title="E-Mail &rarr; mailto:liuqi605752176@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2209902513" title="Weibo &rarr; https://weibo.com/2209902513" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+		  
+	
+		<div>
+			 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="280" height="86" src="//music.163.com/outchain/player?type=2&id=461855254&auto=1&height=66"></iframe>  
+		</div>
+	
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#原理"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件接口"><span class="nav-number">1.1.</span> <span class="nav-text">硬件接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据通信格式"><span class="nav-number">1.2.</span> <span class="nav-text">数据通信格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单片机-gt-4G模块"><span class="nav-number">1.2.1.</span> <span class="nav-text">单片机-&gt;4G模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#指令概括"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">指令概括</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体通信协议"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">具体通信协议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4G模块-gt-服务器"><span class="nav-number">1.2.2.</span> <span class="nav-text">4G模块-&gt;服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#指令概括-1"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">指令概括</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体通信协议-1"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">具体通信协议</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码简述"><span class="nav-number">2.</span> <span class="nav-text">代码简述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-liuqi"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liuqi</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+<script type="text/javascript" src="/js/src/photoswipe.min.js?v="></script>
+<script type="text/javascript" src="/js/src/photoswipe-ui-default.min.js?v="></script>
+
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script>
+  window.livereOptions = {
+    refer: '2019/05/14/按摩椅项目/'
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

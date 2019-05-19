@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <script src="/js/src/photoswipe.min.js?v="></script>
+  <script src="/js/src/photoswipe-ui-default.min.js?v="></script>
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/fancybox/source/jquery.fancybox.css">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"always","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="硬件连接图 AW9523 是一款 IIC 串口转 16 路 GPIO 并口控制器，8 路 PUSH-PULL 驱动，8 路OPEN-DRAIN 或 PUSH-PULL 驱动可选。芯片上电后，GPIO 口为输出状态，中断使能有效。输出电平状态取决于两位 IIC 地址引脚。AW9523 支持引脚关断功能(PDN)，低有效。重新使能后，内部电路处于默认状态。对每一个输入信号作 8us 去抖动处理，当中断">
+<meta name="keywords" content="i2c driver,linux device driver">
+<meta property="og:type" content="article">
+<meta property="og:title" content="aw9523芯片驱动">
+<meta property="og:url" content="http://www.iliuqi.com/2019/05/11/aw9523芯片驱动/index.html">
+<meta property="og:site_name" content="小白成长记">
+<meta property="og:description" content="硬件连接图 AW9523 是一款 IIC 串口转 16 路 GPIO 并口控制器，8 路 PUSH-PULL 驱动，8 路OPEN-DRAIN 或 PUSH-PULL 驱动可选。芯片上电后，GPIO 口为输出状态，中断使能有效。输出电平状态取决于两位 IIC 地址引脚。AW9523 支持引脚关断功能(PDN)，低有效。重新使能后，内部电路处于默认状态。对每一个输入信号作 8us 去抖动处理，当中断">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.iliuqi.com/2019/05/11/aw9523芯片驱动/aw9523原理图.png">
+<meta property="og:updated_time" content="2019-05-19T01:38:19.846Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="aw9523芯片驱动">
+<meta name="twitter:description" content="硬件连接图 AW9523 是一款 IIC 串口转 16 路 GPIO 并口控制器，8 路 PUSH-PULL 驱动，8 路OPEN-DRAIN 或 PUSH-PULL 驱动可选。芯片上电后，GPIO 口为输出状态，中断使能有效。输出电平状态取决于两位 IIC 地址引脚。AW9523 支持引脚关断功能(PDN)，低有效。重新使能后，内部电路处于默认状态。对每一个输入信号作 8us 去抖动处理，当中断">
+<meta name="twitter:image" content="http://www.iliuqi.com/2019/05/11/aw9523芯片驱动/aw9523原理图.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://www.iliuqi.com/2019/05/11/aw9523芯片驱动/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>aw9523芯片驱动 | 小白成长记</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/liuqi605752176" class="github-corner" aria-label="View source on
+	GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; top: 0; border: 0;
+		right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142
+		L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6
+		119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3
+		123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9
+		134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5
+		119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0
+		127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4
+		163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6
+		187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2
+		216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4
+		203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1
+		C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7
+		141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover
+.octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes
+octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media
+(max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner
+	.octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小白成长记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-相册">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/photos" rel="section"><i class="menu-item-icon fa fa-fw fa-camera"></i> <br>相册</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.iliuqi.com/2019/05/11/aw9523芯片驱动/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="liuqi">
+      <meta itemprop="description" content="男儿何不带吴钩，收取关山五十州">
+      <meta itemprop="image" content="/images/personal.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小白成长记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">aw9523芯片驱动
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-11 02:56:07" itemprop="dateCreated datePublished" datetime="2019-05-11T02:56:07+00:00">2019-05-11</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-05-19 01:38:19" itemprop="dateModified" datetime="2019-05-19T01:38:19+00:00">2019-05-19</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/linux-device-driver/" itemprop="url" rel="index"><span itemprop="name">linux device driver</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="硬件连接图"><a href="#硬件连接图" class="headerlink" title="硬件连接图"></a>硬件连接图</h1><blockquote>
+<p>AW9523 是一款 IIC 串口转 16 路 GPIO 并口控制器，8 路 PUSH-PULL 驱动，8 路OPEN-DRAIN 或 PUSH-PULL 驱动可选。芯片上电后，GPIO 口为输出状态，中断使能有效。输出电平状态取决于两位 IIC 地址引脚。AW9523 支持引脚关断功能(PDN)，低有效。重新使能后，内部电路处于默认状态。对每一个输入信号作 8us 去抖动处理，当中断使能时，输入状态变化产生中断请求(INTN)。中断为开漏输出，低有效。通过接口读输入状态寄存器清除中断</p>
+</blockquote>
+<p><img src="aw9523原理图.png" alt="aw9523原理图"></p>
+<h1 id="芯片介绍"><a href="#芯片介绍" class="headerlink" title="芯片介绍"></a>芯片介绍</h1><h2 id="寄存器列表"><a href="#寄存器列表" class="headerlink" title="寄存器列表"></a>寄存器列表</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">ADDR</th>
+<th style="text-align:center">W/R</th>
+<th style="text-align:center">Default Value(HEX)</th>
+<th style="text-align:center">Function</th>
+<th style="text-align:center">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">00H</td>
+<td style="text-align:center">R</td>
+<td style="text-align:center">xxH</td>
+<td style="text-align:center">INPUT_PORT0</td>
+<td style="text-align:center">P0x口输入状态</td>
+</tr>
+<tr>
+<td style="text-align:center">01H</td>
+<td style="text-align:center">R</td>
+<td style="text-align:center">xxH</td>
+<td style="text-align:center">INPUT_PORT1</td>
+<td style="text-align:center">P1x 口输入状态</td>
+</tr>
+<tr>
+<td style="text-align:center">02H</td>
+<td style="text-align:center">W/R</td>
+<td style="text-align:center">xxH</td>
+<td style="text-align:center">OUTPUT_PORT0</td>
+<td style="text-align:center">P0x口输出驱动逻辑，默认值与i2c地址引脚相关</td>
+</tr>
+<tr>
+<td style="text-align:center">03H</td>
+<td style="text-align:center">W/R</td>
+<td style="text-align:center">xxH</td>
+<td style="text-align:center">OUTPUT_PORT0</td>
+<td style="text-align:center">P1x口输出驱动逻辑，默认值与i2c地址引脚相关</td>
+</tr>
+<tr>
+<td style="text-align:center">04H</td>
+<td style="text-align:center">W/R</td>
+<td style="text-align:center">00H</td>
+<td style="text-align:center">CFG_PORT0</td>
+<td style="text-align:center">P0x 口输入或输出选择</td>
+</tr>
+<tr>
+<td style="text-align:center">05H</td>
+<td style="text-align:center">W/R</td>
+<td style="text-align:center">00H</td>
+<td style="text-align:center">CFG_PORT1</td>
+<td style="text-align:center">P1x 口输入或输出选择</td>
+</tr>
+<tr>
+<td style="text-align:center">06H</td>
+<td style="text-align:center">W/R</td>
+<td style="text-align:center">00H</td>
+<td style="text-align:center">INTN_PORT0</td>
+<td style="text-align:center">P0x 口中断使能</td>
+</tr>
+<tr>
+<td style="text-align:center">07H</td>
+<td style="text-align:center">W/R</td>
+<td style="text-align:center">00H</td>
+<td style="text-align:center">INTN_PORT1</td>
+<td style="text-align:center">P1x 口中断使能</td>
+</tr>
+<tr>
+<td style="text-align:center">08H-10H</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td style="text-align:center">11H</td>
+<td style="text-align:center">W/R</td>
+<td style="text-align:center">00H</td>
+<td style="text-align:center">GPOMD</td>
+<td style="text-align:center">P0x口选择OPEN-DRAIN驱动或 PUSH-PULL驱动</td>
+</tr>
+<tr>
+<td style="text-align:center">12H-7EH</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td style="text-align:center">7FH</td>
+<td style="text-align:center">W</td>
+<td style="text-align:center">00H</td>
+<td style="text-align:center">RESET</td>
+<td style="text-align:center">写00H复位</td>
+</tr>
+</tbody>
+</table>
+<h2 id="GPIO输入输出方向选择"><a href="#GPIO输入输出方向选择" class="headerlink" title="GPIO输入输出方向选择"></a>GPIO输入输出方向选择</h2><blockquote>
+<p>CFG_PORT0 和 CFG_PORT1 设定端口为输入、输出状态。寄存器每一比特对应某个 GPIO端口，该位置’1’代表输入状态，置’0’代表输出状态。AW9523 上电后，默认为输出状态。</p>
+</blockquote>
+<h2 id="GPIO输出驱动"><a href="#GPIO输出驱动" class="headerlink" title="GPIO输出驱动"></a>GPIO输出驱动</h2><blockquote>
+<p>P0x 端口默认为 OPEN-DRAIN 驱动，可通过配置 GPOMD 寄存器设定为 PUSH-PULL 驱动。P1x 端口为 PUSH-PULL 驱动。开漏输出时，通过外部电阻上拉驱动高电平。</p>
+<p>GPIO 口默认驱动逻辑取决于 AD0/AD1 两个引脚</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">AD1</th>
+<th style="text-align:center">AD0</th>
+<th style="text-align:center">P17</th>
+<th style="text-align:center">P16</th>
+<th style="text-align:center">P15</th>
+<th style="text-align:center">P14</th>
+<th style="text-align:center">P13</th>
+<th style="text-align:center">P12</th>
+<th style="text-align:center">P11</th>
+<th style="text-align:center">P10</th>
+<th style="text-align:center">P07</th>
+<th style="text-align:center">P06</th>
+<th style="text-align:center">P05</th>
+<th style="text-align:center">P04</th>
+<th style="text-align:center">P03</th>
+<th style="text-align:center">P02</th>
+<th style="text-align:center">P01</th>
+<th style="text-align:center">P00</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">GND</td>
+<td style="text-align:center">GND</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">GND</td>
+<td style="text-align:center">VCC</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">VCC</td>
+<td style="text-align:center">GND</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">VCC</td>
+<td style="text-align:center">VCC</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="GPIO输入状态查询"><a href="#GPIO输入状态查询" class="headerlink" title="GPIO输入状态查询"></a>GPIO输入状态查询</h2><blockquote>
+<p>通过 IIC 接口读 INPUT_PORT0 和 INPUT_PORT1 可获得当前 GPIO 端口逻辑状态。AW9523 GPIO 口支持 1.8V 高电平输入。</p>
+</blockquote>
+<h2 id="中断功能"><a href="#中断功能" class="headerlink" title="中断功能"></a>中断功能</h2><blockquote>
+<p>当 GPIO 口配置成输入状态，且使能中断功能后，该 IO 口的输入状态变化将产生中断请求。默认情况下，16 路 GPIO 口中断使能。AW9523 时刻监测输入状态，当检测到 IO 口逻辑电平变化，内部电路进行 8us 去抖动处理。若 8us 后，确认该状态变化，则中断引脚上电平拉低。</p>
+</blockquote>
+<blockquote>
+<p> 通过读 INPUT_PORT0 和 INPUT_PORT1 寄存器清除中断。由 P0x 变化产生的中断，必须读INPUT_PORT0 寄存器清除；由 P1x 变化产生的中断，必须读 INPUT_PORT1 寄存器清除。不可<br>跨组清除中断。</p>
+</blockquote>
+<h2 id="复位功能"><a href="#复位功能" class="headerlink" title="复位功能"></a>复位功能</h2><blockquote>
+<p>AW9523 支持引脚复位和软复位。拉低 PDN 引脚，AW9523 内部电路处于复位状态直至 PDN引脚拉高。或通过 IIC 接口对 RESET 寄存器写入数据 00H，内部电路也将完成一次复位。</p>
+</blockquote>
+<h2 id="寄存器详细描述"><a href="#寄存器详细描述" class="headerlink" title="寄存器详细描述"></a>寄存器详细描述</h2><h3 id="INPUT-PORT0-00H-，输入状态寄存器"><a href="#INPUT-PORT0-00H-，输入状态寄存器" class="headerlink" title="INPUT_PORT0(00H) ，输入状态寄存器"></a>INPUT_PORT0(00H) ，输入状态寄存器</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">位</th>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">D7</td>
+<td style="text-align:center">INPUT_P07</td>
+<td style="text-align:center">P07 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D6</td>
+<td style="text-align:center">INPUT_P06</td>
+<td style="text-align:center">P06 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D5</td>
+<td style="text-align:center">INPUT_P05</td>
+<td style="text-align:center">P05 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D4</td>
+<td style="text-align:center">INPUT_P04</td>
+<td style="text-align:center">P04 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D3</td>
+<td style="text-align:center">INPUT_P03</td>
+<td style="text-align:center">P03 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D2</td>
+<td style="text-align:center">INPUT_P02</td>
+<td style="text-align:center">P02 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D1</td>
+<td style="text-align:center">INPUT_P01</td>
+<td style="text-align:center">P01 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D0</td>
+<td style="text-align:center">INPUT_P00</td>
+<td style="text-align:center">P00 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+</tbody>
+</table>
+<h3 id="INPUT-PORT1-01H-，输入状态寄存器"><a href="#INPUT-PORT1-01H-，输入状态寄存器" class="headerlink" title="INPUT_PORT1(01H)，输入状态寄存器"></a>INPUT_PORT1(01H)，输入状态寄存器</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">位</th>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">D7</td>
+<td style="text-align:center">INPUT_P17</td>
+<td style="text-align:center">P17 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D6</td>
+<td style="text-align:center">INPUT_P16</td>
+<td style="text-align:center">P16 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D5</td>
+<td style="text-align:center">INPUT_P15</td>
+<td style="text-align:center">P15 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D4</td>
+<td style="text-align:center">INPUT_P14</td>
+<td style="text-align:center">P14 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D3</td>
+<td style="text-align:center">INPUT_P13</td>
+<td style="text-align:center">P13 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D2</td>
+<td style="text-align:center">INPUT_P12</td>
+<td style="text-align:center">P12 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D1</td>
+<td style="text-align:center">INPUT_P11</td>
+<td style="text-align:center">P11 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+<tr>
+<td style="text-align:center">D0</td>
+<td style="text-align:center">INPUT_P10</td>
+<td style="text-align:center">P10 引脚当前逻辑状态，0-低电平，1-高电平</td>
+<td style="text-align:center">X</td>
+</tr>
+</tbody>
+</table>
+<h3 id="OUTPUT-PORT0-02H-，输出状态寄存器"><a href="#OUTPUT-PORT0-02H-，输出状态寄存器" class="headerlink" title="OUTPUT_PORT0(02H)，输出状态寄存器"></a>OUTPUT_PORT0(02H)，输出状态寄存器</h3><blockquote>
+<p>AD1/AD0外接GND/GND时，输出默认值</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">位</th>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">D7</td>
+<td style="text-align:center">OUTPUT_P07</td>
+<td style="text-align:center">P07 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D6</td>
+<td style="text-align:center">OUTPUT_P06</td>
+<td style="text-align:center">P06 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D5</td>
+<td style="text-align:center">OUTPUT_P05</td>
+<td style="text-align:center">P05 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D4</td>
+<td style="text-align:center">OUTPUT_P04</td>
+<td style="text-align:center">P04 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D3</td>
+<td style="text-align:center">OUTPUT_P03</td>
+<td style="text-align:center">P03 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D2</td>
+<td style="text-align:center">OUTPUT_P02</td>
+<td style="text-align:center">P02 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D1</td>
+<td style="text-align:center">OUTPUT_P01</td>
+<td style="text-align:center">P01 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D0</td>
+<td style="text-align:center">OUTPUT_P00</td>
+<td style="text-align:center">P00 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="OUTPUT-PORT1-03H-，输出状态寄存器"><a href="#OUTPUT-PORT1-03H-，输出状态寄存器" class="headerlink" title="OUTPUT_PORT1(03H)，输出状态寄存器"></a>OUTPUT_PORT1(03H)，输出状态寄存器</h3><blockquote>
+<p>AD1/AD0外接GND/GND时，输出默认值</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">位</th>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">D7</td>
+<td style="text-align:center">OUTPUT_P17</td>
+<td style="text-align:center">P17 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D6</td>
+<td style="text-align:center">OUTPUT_P16</td>
+<td style="text-align:center">P16 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D5</td>
+<td style="text-align:center">OUTPUT_P15</td>
+<td style="text-align:center">P15 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D4</td>
+<td style="text-align:center">OUTPUT_P14</td>
+<td style="text-align:center">P14 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D3</td>
+<td style="text-align:center">OUTPUT_P13</td>
+<td style="text-align:center">P13 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D2</td>
+<td style="text-align:center">OUTPUT_P12</td>
+<td style="text-align:center">P12 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D1</td>
+<td style="text-align:center">INPUT_P11</td>
+<td style="text-align:center">P11 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D0</td>
+<td style="text-align:center">OUTPUT_P10</td>
+<td style="text-align:center">P10 引脚输出状态，0-低电平，1-高电平</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="INTN-PORT0-06H-，中断使能寄存器"><a href="#INTN-PORT0-06H-，中断使能寄存器" class="headerlink" title="INTN_PORT0(06H)，中断使能寄存器"></a>INTN_PORT0(06H)，中断使能寄存器</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">位</th>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">D7</td>
+<td style="text-align:center">INTN_P07</td>
+<td style="text-align:center">P07 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D6</td>
+<td style="text-align:center">INTN_P06</td>
+<td style="text-align:center">P06 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D5</td>
+<td style="text-align:center">INTN_P05</td>
+<td style="text-align:center">P05 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D4</td>
+<td style="text-align:center">INTN_P04</td>
+<td style="text-align:center">P04 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D3</td>
+<td style="text-align:center">INTN_P03</td>
+<td style="text-align:center">P03 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D2</td>
+<td style="text-align:center">INTN_P02</td>
+<td style="text-align:center">P02 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D1</td>
+<td style="text-align:center">INTN_P01</td>
+<td style="text-align:center">P01 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D0</td>
+<td style="text-align:center">INTN_P00</td>
+<td style="text-align:center">P00 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="INTN-PORT1-07H-，中断使能寄存器"><a href="#INTN-PORT1-07H-，中断使能寄存器" class="headerlink" title="INTN_PORT1(07H)，中断使能寄存器"></a>INTN_PORT1(07H)，中断使能寄存器</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">位</th>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">描述</th>
+<th style="text-align:center">默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">D7</td>
+<td style="text-align:center">INTN_P17</td>
+<td style="text-align:center">P17 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D6</td>
+<td style="text-align:center">INTN_P16</td>
+<td style="text-align:center">P16 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D5</td>
+<td style="text-align:center">INTN_P15</td>
+<td style="text-align:center">P15 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D4</td>
+<td style="text-align:center">INTN_P14</td>
+<td style="text-align:center">P14 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D3</td>
+<td style="text-align:center">INTN_P13</td>
+<td style="text-align:center">P13 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D2</td>
+<td style="text-align:center">INTN_P12</td>
+<td style="text-align:center">P12 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D1</td>
+<td style="text-align:center">INTN_P11</td>
+<td style="text-align:center">P11 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">D0</td>
+<td style="text-align:center">INTN_P10</td>
+<td style="text-align:center">P10 引脚中断使能控制，0-使能，1-关断</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<h1 id="GPIO配置表"><a href="#GPIO配置表" class="headerlink" title="GPIO配置表"></a>GPIO配置表</h1><blockquote>
+<p>AW9523(0x58)主要是用来连接各种灯的</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">AW9523(0X58)</th>
+<th style="text-align:center">引脚连接</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">P00</td>
+<td style="text-align:center">3G_SIGNAL_LED_B</td>
+</tr>
+<tr>
+<td style="text-align:center">P01</td>
+<td style="text-align:center">3G_SIGNAL_LED_R</td>
+</tr>
+<tr>
+<td style="text-align:center">P02</td>
+<td style="text-align:center">3G_SIGNAL_LED_G</td>
+</tr>
+<tr>
+<td style="text-align:center">P03</td>
+<td style="text-align:center">LED2G4</td>
+</tr>
+<tr>
+<td style="text-align:center">P04</td>
+<td style="text-align:center">5GLED</td>
+</tr>
+<tr>
+<td style="text-align:center">P05</td>
+<td style="text-align:center">LAN LED</td>
+</tr>
+<tr>
+<td style="text-align:center">P06</td>
+<td style="text-align:center">SIGNAL_LED_1</td>
+</tr>
+<tr>
+<td style="text-align:center">P07</td>
+<td style="text-align:center">SIGNAL_LED_2</td>
+</tr>
+<tr>
+<td style="text-align:center">P14</td>
+<td style="text-align:center">SIGNAL_LED_3</td>
+</tr>
+<tr>
+<td style="text-align:center">P15</td>
+<td style="text-align:center">SIGNAL_LED_4</td>
+</tr>
+<tr>
+<td style="text-align:center">SCL</td>
+<td style="text-align:center">GPIO11(mdm9x40 i2c_3)</td>
+</tr>
+<tr>
+<td style="text-align:center">SDA</td>
+<td style="text-align:center">GPIO10(mdm9x40 i2c_3)</td>
+</tr>
+<tr>
+<td style="text-align:center">PDN</td>
+<td style="text-align:center">GPIO99(mdm9x40)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>AW9523(0x5A)主要是用来连接按键的</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">AW9523(0X5A)</th>
+<th style="text-align:center">引脚连接</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">P00</td>
+<td style="text-align:center">WPS_KEY</td>
+</tr>
+<tr>
+<td style="text-align:center">P01</td>
+<td style="text-align:center">RESET_KEY</td>
+</tr>
+<tr>
+<td style="text-align:center">SCL</td>
+<td style="text-align:center">GPIO11(mdm9x40 i2c_3)</td>
+</tr>
+<tr>
+<td style="text-align:center">SDA</td>
+<td style="text-align:center">GPIO10(mdm9x40 i2c_3)</td>
+</tr>
+<tr>
+<td style="text-align:center">INTN</td>
+<td style="text-align:center">GPIO94(mdm9x40)</td>
+</tr>
+<tr>
+<td style="text-align:center">PDN</td>
+<td style="text-align:center">GPIO99(mdm9x40)</td>
+</tr>
+</tbody>
+</table>
+<h1 id="设备树配置"><a href="#设备树配置" class="headerlink" title="设备树配置"></a>设备树配置</h1><blockquote>
+<p>相关的文件：</p>
+</blockquote>
+<ol>
+<li>kernel/arch/arm/boot/dts/qcom/mdm9640.dtsi</li>
+<li>kernel/arch/arm/boot/dts/qcom/mdm9640-pinctrl.dtsi</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">aw9523_pins_rst0: aw9523_pins_rst0 &#123;                                                   </span><br><span class="line">     mux &#123;</span><br><span class="line">             pins = &quot;gpio99&quot;;</span><br><span class="line">             function = &quot;gpio&quot;;</span><br><span class="line">         &#125;;</span><br><span class="line">     config &#123;</span><br><span class="line">             pins = &quot;gpio99&quot;;</span><br><span class="line">             drive-strength = &lt;12&gt;;</span><br><span class="line">             bias-disable = &lt;0&gt;;</span><br><span class="line">             output-low;</span><br><span class="line">           &#125;;</span><br><span class="line">   &#125;;</span><br><span class="line">   aw9523_pins_rst1: aw9523_pins_rst1 &#123;</span><br><span class="line">           mux &#123;</span><br><span class="line">                   pins = &quot;gpio99&quot;;</span><br><span class="line">                   function = &quot;gpio&quot;;</span><br><span class="line">           &#125;;</span><br><span class="line">           config &#123;</span><br><span class="line">                   pins = &quot;gpio99&quot;;</span><br><span class="line">                   drive-strength = &lt;12&gt;;</span><br><span class="line">                   bias-disable = &lt;0&gt;;</span><br><span class="line">                   output-high;</span><br><span class="line">           &#125;;</span><br><span class="line">   &#125;;</span><br><span class="line">   aw9523_pins_eint_as_int: aw9523_pins_eint_as_int &#123;</span><br><span class="line">           mux &#123;</span><br><span class="line">                   pins = &quot;gpio94&quot;;</span><br><span class="line">                   function = &quot;gpio&quot;;</span><br><span class="line">           &#125;;</span><br><span class="line">           config &#123;</span><br><span class="line">                   pins = &quot;gpio94&quot;;</span><br><span class="line">                   drive-strength = &lt;10&gt;;</span><br><span class="line">                   input-enable;</span><br><span class="line">                   bias-pull-up;</span><br><span class="line"></span><br><span class="line">           &#125;;</span><br><span class="line">   &#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&amp;i2c_3 &#123;</span><br><span class="line">        aw9523_led: aw9523_led@58 &#123;</span><br><span class="line">            compatible = &quot;awinic,aw9523_led&quot;;</span><br><span class="line">            reg = &lt;0x58&gt;;</span><br><span class="line">            reset-gpio = &lt;&amp;tlmm_pinmux 99 0&gt;;</span><br><span class="line">            status = &quot;okay&quot;;</span><br><span class="line">            aw9523,led &#123;</span><br><span class="line">                aw9523,name = &quot;aw9523_led&quot;;</span><br><span class="line">                aw9523,imax = &lt;3&gt;; </span><br><span class="line">                aw9523,brightness = &lt;32&gt;;</span><br><span class="line">                aw9523,max_brightness = &lt;255&gt;;</span><br><span class="line">            &#125;;   </span><br><span class="line">        &#125;;   </span><br><span class="line">     </span><br><span class="line">        aw9523_key: aw9523_key@5A &#123;</span><br><span class="line">            compatible = &quot;awinic,aw9523_key&quot;;                                                   </span><br><span class="line">            reg = &lt;0x5a&gt;;</span><br><span class="line">            awinic,reset-gpio = &lt;&amp;tlmm_pinmux 99 0&gt;;</span><br><span class="line">            awinic,irq-gpio = &lt;&amp;tlmm_pinmux 94 0&gt;;</span><br><span class="line">            pinctrl-names = &quot;aw9523_reset_low&quot;, &quot;aw9523_reset_high&quot;, &quot;aw9523_eint&quot;;</span><br><span class="line">            pinctrl-0 = &lt;&amp;aw9523_pins_rst0&gt;;</span><br><span class="line">            pinctrl-1 = &lt;&amp;aw9523_pins_rst1&gt;;</span><br><span class="line">            pinctrl-2 = &lt;&amp;aw9523_pins_eint_as_int&gt;;</span><br><span class="line">            status = &quot;okay&quot;;</span><br><span class="line">        &#125;;   </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="AW9523驱动流程"><a href="#AW9523驱动流程" class="headerlink" title="AW9523驱动流程"></a>AW9523驱动流程</h1><blockquote>
+<p>相关文件：</p>
+</blockquote>
+<ol>
+<li>/kernel/driver/i2c/aw9523/aw9523_key.c</li>
+<li>/kernel/driver/i2c/aw9523/aw9523_led.c</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">/* seset &amp; int Pins  */</span>                                                                	       </span><br><span class="line">pdata-&gt;pinctrl = devm_pinctrl_get(&amp;client-&gt;dev);</span><br><span class="line">   <span class="keyword">if</span> (IS_ERR(pdata-&gt;pinctrl)) &#123;                                                          </span><br><span class="line">       pr_err(<span class="string">"%s:failed to get pinctrl\n"</span>, __func__);  </span><br><span class="line">	<span class="keyword">goto</span> err; </span><br><span class="line">   &#125;                                                                   </span><br><span class="line">   pdata-&gt;rst_state_low = pinctrl_lookup_state(pdata-&gt;pinctrl, <span class="string">"aw9523_reset_low"</span>); </span><br><span class="line"><span class="keyword">if</span> (IS_ERR(pdata-&gt;rst_state_low)) &#123;    </span><br><span class="line">	pr_err(<span class="string">"%s:can not get reset pinstate\n"</span>, __func__);     </span><br><span class="line">	<span class="keyword">goto</span> err;                                                                 </span><br><span class="line">   &#125;                                                                  </span><br><span class="line">   pdata-&gt;rst_state_high = pinctrl_lookup_state(pdata-&gt;pinctrl, <span class="string">"aw9523_reset_high"</span>);   </span><br><span class="line"><span class="keyword">if</span> (IS_ERR(pdata-&gt;rst_state_high)) &#123;         </span><br><span class="line">	pr_err(<span class="string">"%s:can not get reset pinstate\n"</span>, __func__);     </span><br><span class="line">	<span class="keyword">goto</span> err;        </span><br><span class="line">&#125;                                                                  </span><br><span class="line">   pdata-&gt;irq_state = pinctrl_lookup_state(pdata-&gt;pinctrl, <span class="string">"aw9523_eint"</span>);   </span><br><span class="line"><span class="keyword">if</span> (IS_ERR(pdata-&gt;irq_state)) &#123;    </span><br><span class="line">	pr_err(<span class="string">"%s:can not get irq pinstate\n"</span>, __func__);</span><br><span class="line">       <span class="keyword">goto</span> err;</span><br><span class="line">   &#125;</span><br><span class="line">ret= pinctrl_select_state(pdata-&gt;pinctrl, pdata-&gt;rst_state_high);</span><br><span class="line">   <span class="keyword">if</span> (ret)&#123;</span><br><span class="line">       pr_err(<span class="string">"%s:set reset pin state failed!\n"</span>, __func__);</span><br><span class="line">   &#125;</span><br><span class="line">ret = pinctrl_select_state(pdata-&gt;pinctrl, pdata-&gt;irq_state);</span><br><span class="line">   <span class="keyword">if</span> (ret)&#123;</span><br><span class="line">       pr_err(<span class="string">"%s:set irq pin state failed!\n"</span>, __func__);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>pinctrl子系统，选择rst引脚状态</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">/* key report */</span>        </span><br><span class="line">pdata-&gt;input = input_allocate_device();</span><br><span class="line">   <span class="keyword">if</span> (!pdata-&gt;input) &#123;</span><br><span class="line">       dev_err(&amp;client-&gt;dev, <span class="string">"%s: failed to allocate input device\n"</span>, __func__);</span><br><span class="line">       <span class="keyword">goto</span> err_rst_gpio;</span><br><span class="line">   &#125;</span><br><span class="line">pdata-&gt;input-&gt;name = <span class="string">"aw9523-key"</span>;</span><br><span class="line">   pdata-&gt;input-&gt;phys = <span class="string">"aw9523-keys/input0"</span>;</span><br><span class="line">   pdata-&gt;input-&gt;dev.parent = &amp;client-&gt;dev;</span><br><span class="line">   pdata-&gt;keymap_len = <span class="keyword">sizeof</span>(key_map)/<span class="keyword">sizeof</span>(struct keymap);</span><br><span class="line">   pdata-&gt;keymap = (struct keymap *)&amp;key_map;</span><br><span class="line">input_set_drvdata(pdata-&gt;input, pdata);</span><br><span class="line">__set_bit(EV_KEY, pdata-&gt;input-&gt;evbit);</span><br><span class="line">   __set_bit(EV_SYN, pdata-&gt;input-&gt;evbit);</span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; pdata-&gt;keymap_len; i++)&#123;</span><br><span class="line">       <span class="keyword">if</span>(pdata-&gt;keymap[i].name[<span class="number">0</span>]==<span class="string">'\0'</span>) <span class="keyword">continue</span>;</span><br><span class="line">       __set_bit(pdata-&gt;keymap[i].key_code, pdata-&gt;input-&gt;keybit);</span><br><span class="line">   &#125;</span><br><span class="line">ret = input_register_device(pdata-&gt;input);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注册input子系统</p>
+</blockquote>
+<h1 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br><span class="line">491</span><br><span class="line">492</span><br><span class="line">493</span><br><span class="line">494</span><br><span class="line">495</span><br><span class="line">496</span><br><span class="line">497</span><br><span class="line">498</span><br><span class="line">499</span><br><span class="line">500</span><br><span class="line">501</span><br><span class="line">502</span><br><span class="line">503</span><br><span class="line">504</span><br><span class="line">505</span><br><span class="line">506</span><br><span class="line">507</span><br><span class="line">508</span><br><span class="line">509</span><br><span class="line">510</span><br><span class="line">511</span><br><span class="line">512</span><br><span class="line">513</span><br><span class="line">514</span><br><span class="line">515</span><br><span class="line">516</span><br><span class="line">517</span><br><span class="line">518</span><br><span class="line">519</span><br><span class="line">520</span><br><span class="line">521</span><br><span class="line">522</span><br><span class="line">523</span><br><span class="line">524</span><br><span class="line">525</span><br><span class="line">526</span><br><span class="line">527</span><br><span class="line">528</span><br><span class="line">529</span><br><span class="line">530</span><br><span class="line">531</span><br><span class="line">532</span><br><span class="line">533</span><br><span class="line">534</span><br><span class="line">535</span><br><span class="line">536</span><br><span class="line">537</span><br><span class="line">538</span><br><span class="line">539</span><br><span class="line">540</span><br><span class="line">541</span><br><span class="line">542</span><br><span class="line">543</span><br><span class="line">544</span><br><span class="line">545</span><br><span class="line">546</span><br><span class="line">547</span><br><span class="line">548</span><br><span class="line">549</span><br><span class="line">550</span><br><span class="line">551</span><br><span class="line">552</span><br><span class="line">553</span><br><span class="line">554</span><br><span class="line">555</span><br><span class="line">556</span><br><span class="line">557</span><br><span class="line">558</span><br><span class="line">559</span><br><span class="line">560</span><br><span class="line">561</span><br><span class="line">562</span><br><span class="line">563</span><br><span class="line">564</span><br><span class="line">565</span><br><span class="line">566</span><br><span class="line">567</span><br><span class="line">568</span><br><span class="line">569</span><br><span class="line">570</span><br><span class="line">571</span><br><span class="line">572</span><br><span class="line">573</span><br><span class="line">574</span><br><span class="line">575</span><br><span class="line">576</span><br><span class="line">577</span><br><span class="line">578</span><br><span class="line">579</span><br><span class="line">580</span><br><span class="line">581</span><br><span class="line">582</span><br><span class="line">583</span><br><span class="line">584</span><br><span class="line">585</span><br><span class="line">586</span><br><span class="line">587</span><br><span class="line">588</span><br><span class="line">589</span><br><span class="line">590</span><br><span class="line">591</span><br><span class="line">592</span><br><span class="line">593</span><br><span class="line">594</span><br><span class="line">595</span><br><span class="line">596</span><br><span class="line">597</span><br><span class="line">598</span><br><span class="line">599</span><br><span class="line">600</span><br><span class="line">601</span><br><span class="line">602</span><br><span class="line">603</span><br><span class="line">604</span><br><span class="line">605</span><br><span class="line">606</span><br><span class="line">607</span><br><span class="line">608</span><br><span class="line">609</span><br><span class="line">610</span><br><span class="line">611</span><br><span class="line">612</span><br><span class="line">613</span><br><span class="line">614</span><br><span class="line">615</span><br><span class="line">616</span><br><span class="line">617</span><br><span class="line">618</span><br><span class="line">619</span><br><span class="line">620</span><br><span class="line">621</span><br><span class="line">622</span><br><span class="line">623</span><br><span class="line">624</span><br><span class="line">625</span><br><span class="line">626</span><br><span class="line">627</span><br><span class="line">628</span><br><span class="line">629</span><br><span class="line">630</span><br><span class="line">631</span><br><span class="line">632</span><br><span class="line">633</span><br><span class="line">634</span><br><span class="line">635</span><br><span class="line">636</span><br><span class="line">637</span><br><span class="line">638</span><br><span class="line">639</span><br><span class="line">640</span><br><span class="line">641</span><br><span class="line">642</span><br><span class="line">643</span><br><span class="line">644</span><br><span class="line">645</span><br><span class="line">646</span><br><span class="line">647</span><br><span class="line">648</span><br><span class="line">649</span><br><span class="line">650</span><br><span class="line">651</span><br><span class="line">652</span><br><span class="line">653</span><br><span class="line">654</span><br><span class="line">655</span><br><span class="line">656</span><br><span class="line">657</span><br><span class="line">658</span><br><span class="line">659</span><br><span class="line">660</span><br><span class="line">661</span><br><span class="line">662</span><br><span class="line">663</span><br><span class="line">664</span><br><span class="line">665</span><br><span class="line">666</span><br><span class="line">667</span><br><span class="line">668</span><br><span class="line">669</span><br><span class="line">670</span><br><span class="line">671</span><br><span class="line">672</span><br><span class="line">673</span><br><span class="line">674</span><br><span class="line">675</span><br><span class="line">676</span><br><span class="line">677</span><br><span class="line">678</span><br><span class="line">679</span><br><span class="line">680</span><br><span class="line">681</span><br><span class="line">682</span><br><span class="line">683</span><br><span class="line">684</span><br><span class="line">685</span><br><span class="line">686</span><br><span class="line">687</span><br><span class="line">688</span><br><span class="line">689</span><br><span class="line">690</span><br><span class="line">691</span><br><span class="line">692</span><br><span class="line">693</span><br><span class="line">694</span><br><span class="line">695</span><br><span class="line">696</span><br><span class="line">697</span><br><span class="line">698</span><br><span class="line">699</span><br><span class="line">700</span><br><span class="line">701</span><br><span class="line">702</span><br><span class="line">703</span><br><span class="line">704</span><br><span class="line">705</span><br><span class="line">706</span><br><span class="line">707</span><br><span class="line">708</span><br><span class="line">709</span><br><span class="line">710</span><br><span class="line">711</span><br><span class="line">712</span><br><span class="line">713</span><br><span class="line">714</span><br><span class="line">715</span><br><span class="line">716</span><br><span class="line">717</span><br><span class="line">718</span><br><span class="line">719</span><br><span class="line">720</span><br><span class="line">721</span><br><span class="line">722</span><br><span class="line">723</span><br><span class="line">724</span><br><span class="line">725</span><br><span class="line">726</span><br><span class="line">727</span><br><span class="line">728</span><br><span class="line">729</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * aw9523.c   aw9523 martix key</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Version: v1.0.1</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Copyright (c) 2017 AWINIC Technology CO., LTD</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *  Author: Nick Li &lt;liweilei@awinic.com.cn&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * This program is free software; you can redistribute  it and/or modify it</span></span><br><span class="line"><span class="comment"> * under  the terms of  the GNU General  Public License as published by the</span></span><br><span class="line"><span class="comment"> * Free Software Foundation;  either version 2 of the  License, or (at your</span></span><br><span class="line"><span class="comment"> * option) any later version.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/init.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/interrupt.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/irq.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/workqueue.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/pm.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/platform_device.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/input.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/i2c.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/gpio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/slab.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/delay.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/of_gpio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/pinctrl/consumer.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/regulator/consumer.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/dma-mapping.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/hrtimer.h&gt;  </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/input/aw9523_key.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/uaccess.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> HRTIMER_FRAME	20</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DISABLE_PO_IRQ 0xff</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DISABLE_P1_IRQ 0xff</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENABLE_PO_IRQ 0xfc</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ENABLE_P1_IRQ 0xff</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_IRQ_INPUT_MODE 0x03</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_IRQ_INPUT_MODE 0x00</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*register list */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_INPUT		0x00</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_INPUT		0x01</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_OUTPUT		0x02</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_OUTPUT		0x03</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_CONFIG		0x04</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_CONFIG 		0x05</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_INT		0x06</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_INT		0x07</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ID_REG			0x10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CTL_REG			0x11</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_LED_MODE		0x12</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_LED_MODE		0x13</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_0_DIM0		0x20</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_1_DIM0		0x21</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_2_DIM0		0x22</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_3_DIM0		0x23</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_0_DIM0		0x24</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_1_DIM0		0x25</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_2_DIM0		0x26</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_3_DIM0		0x27</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_4_DIM0		0x28</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_5_DIM0		0x29</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_6_DIM0		0x2A</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P0_7_DIM0		0x2B</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_4_DIM0		0x2C</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_5_DIM0		0x2D</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_6_DIM0		0x2E</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> P1_7_DIM0		0x2F</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SW_RSTN			0x7F</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P0_0		0</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P0_1		1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P0_2		2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P0_3		3</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P0_4		4</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P0_5		5</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P0_6		6</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P0_7		7</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P1_0		8</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P1_1		9</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P1_2		10</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P1_3		11</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P1_4		12</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P1_5		13</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P1_6		14</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> KROW_P1_7		15</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> SPI_DEV_NAME <span class="meta-string">"si3217x"</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> WPSKEY_CODE 293</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RESETKEY_CODE 294</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">keymap</span> <span class="title">key_map</span>[16]=&#123;</span></span><br><span class="line">	[KROW_P0_0] = &#123;<span class="string">"WPS_KEY"</span>,	WPSKEY_CODE&#125;,</span><br><span class="line">	[KROW_P0_1] = &#123;<span class="string">"RESET_KEY"</span>,	RESETKEY_CODE&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> keyst_old[<span class="number">2</span>];</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> keyst_def[<span class="number">2</span>] = &#123;<span class="number">0x00</span>, <span class="number">0x81</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">aw9523_kpad_platform_data</span> *<span class="title">aw9523_data</span> = <span class="title">NULL</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*********************************************************</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * aw9523 i2c write/read</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> ********************************************************/</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> __aw9523_read_reg(struct i2c_client *client, <span class="keyword">int</span> reg, <span class="keyword">unsigned</span> <span class="keyword">char</span> *val)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> ret;</span><br><span class="line"></span><br><span class="line">	ret = i2c_smbus_read_byte_data(client, reg);</span><br><span class="line">	<span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">		dev_err(&amp;client-&gt;dev, <span class="string">"i2c read fail: can't read from %02x: %d\n"</span>, reg, ret);</span><br><span class="line">		<span class="keyword">return</span> ret;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		*val = ret;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> __aw9523_write_reg(struct i2c_client *client, <span class="keyword">int</span> reg, <span class="keyword">int</span> val)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> ret;</span><br><span class="line"></span><br><span class="line">	ret = i2c_smbus_write_byte_data(client, reg, val);</span><br><span class="line">	<span class="keyword">if</span> (ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">		dev_err(&amp;client-&gt;dev, <span class="string">"i2c write fail: can't write %02x to %02x: %d\n"</span>,</span><br><span class="line">			val, reg, ret);</span><br><span class="line">		<span class="keyword">return</span> ret;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">aw9523_read_reg</span><span class="params">(struct i2c_client *client, <span class="keyword">int</span> reg,</span></span></span><br><span class="line"><span class="function"><span class="params">						<span class="keyword">unsigned</span> <span class="keyword">char</span> *val)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rc;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">aw9523_kpad_platform_data</span> *<span class="title">pdata</span> = <span class="title">NULL</span>;</span></span><br><span class="line"></span><br><span class="line">	pdata = i2c_get_clientdata(client);</span><br><span class="line">	<span class="keyword">if</span> (pdata) &#123;</span><br><span class="line">		mutex_lock(&amp;pdata-&gt;read_write_lock);</span><br><span class="line">		rc = __aw9523_read_reg(client, reg, val);</span><br><span class="line">		mutex_unlock(&amp;pdata-&gt;read_write_lock);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> rc;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">aw9523_write_reg</span><span class="params">(struct i2c_client *client, <span class="keyword">int</span> reg,</span></span></span><br><span class="line"><span class="function"><span class="params">						<span class="keyword">unsigned</span> <span class="keyword">char</span> val)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rc;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">aw9523_kpad_platform_data</span> *<span class="title">pdata</span>;</span></span><br><span class="line"></span><br><span class="line">	pdata = i2c_get_clientdata(client);</span><br><span class="line">	mutex_lock(&amp;pdata-&gt;read_write_lock);</span><br><span class="line">	rc = __aw9523_write_reg(client, reg, val);</span><br><span class="line">	mutex_unlock(&amp;pdata-&gt;read_write_lock);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> rc;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*********************************************************</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * hrtimer work</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> ********************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">aw9523_key_work</span><span class="params">(struct work_struct *work)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">aw9523_kpad_platform_data</span> *<span class="title">pdata</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">i2c_client</span> *<span class="title">client</span>;</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> val;</span><br><span class="line">	<span class="keyword">int</span> i; <span class="keyword">bool</span> key_val;</span><br><span class="line">	pdata = aw9523_data;</span><br><span class="line">	client = pdata-&gt;client;</span><br><span class="line">	</span><br><span class="line">	aw9523_read_reg(client, P0_INPUT, &amp;val);</span><br><span class="line">	<span class="keyword">if</span>(val != keyst_old[<span class="number">0</span>])&#123;</span><br><span class="line">		<span class="keyword">for</span>(i = <span class="number">0</span>; i&lt;<span class="number">8</span>; i++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(pdata-&gt;keymap[i].name[<span class="number">0</span>]==<span class="string">'\0'</span>) <span class="keyword">continue</span>;</span><br><span class="line">			<span class="keyword">if</span>((val&amp; <span class="number">1</span>&lt;&lt;i) != (keyst_old[<span class="number">0</span>] &amp; <span class="number">1</span>&lt;&lt;i))&#123;</span><br><span class="line">				key_val = ((val&amp; <span class="number">1</span>&lt;&lt;i) == (keyst_def[<span class="number">0</span>] &amp; <span class="number">1</span>&lt;&lt;i));</span><br><span class="line">				input_report_key(pdata-&gt;input, pdata-&gt;keymap[i].key_code, key_val);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		keyst_old[<span class="number">0</span>] = val;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	aw9523_read_reg(client, P1_INPUT, &amp;val);</span><br><span class="line">	<span class="keyword">if</span>(val != keyst_old[<span class="number">1</span>])&#123;</span><br><span class="line">		<span class="keyword">for</span>(i = <span class="number">0</span>; i&lt;<span class="number">8</span>; i++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(pdata-&gt;keymap[i+<span class="number">8</span>].name[<span class="number">0</span>]==<span class="string">'\0'</span>) <span class="keyword">continue</span>;</span><br><span class="line">			<span class="keyword">if</span>((val&amp; <span class="number">1</span>&lt;&lt;i) != (keyst_old[<span class="number">1</span>] &amp; <span class="number">1</span>&lt;&lt;i))&#123;</span><br><span class="line">				key_val = ((val&amp; <span class="number">1</span>&lt;&lt;i) == (keyst_def[<span class="number">1</span>] &amp; <span class="number">1</span>&lt;&lt;i));</span><br><span class="line">				input_report_key(pdata-&gt;input, pdata-&gt;keymap[i+<span class="number">8</span>].key_code, key_val);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		keyst_old[<span class="number">1</span>] = val;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	aw9523_write_reg(client, P0_INT, ENABLE_PO_IRQ); 		<span class="comment">//enable p0 port irq	</span></span><br><span class="line">	aw9523_write_reg(client, P1_INT, ENABLE_P1_IRQ); 		<span class="comment">//enable p1 port irq</span></span><br><span class="line">	input_sync(pdata-&gt;input);</span><br><span class="line">	enable_irq(client-&gt;irq);</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">enum</span> hrtimer_restart <span class="title">aw9523_key_timer_func</span><span class="params">(struct hrtimer *timer)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	schedule_work(&amp;aw9523_data-&gt;key_work);</span><br><span class="line">	<span class="keyword">return</span> HRTIMER_NORESTART; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*********************************************************</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * int work</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> ********************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">aw9523_int_work</span><span class="params">(struct work_struct *work)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">aw9523_kpad_platform_data</span> *<span class="title">pdata</span> = <span class="title">container_of</span>(<span class="title">work</span>,</span></span><br><span class="line"><span class="class">					<span class="title">struct</span> <span class="title">aw9523_kpad_platform_data</span>, <span class="title">work</span>.<span class="title">work</span>);</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">i2c_client</span> *<span class="title">client</span> = <span class="title">pdata</span>-&gt;<span class="title">client</span>;</span></span><br><span class="line">	aw9523_write_reg(client, P0_INT, DISABLE_PO_IRQ); 		<span class="comment">//disable p0 port irq	</span></span><br><span class="line">	aw9523_write_reg(client, P1_INT, DISABLE_P1_IRQ); 		<span class="comment">//disable p1 port irq</span></span><br><span class="line">	hrtimer_start(&amp;pdata-&gt;key_timer, ktime_set(<span class="number">0</span>,(<span class="number">1000</span>/HRTIMER_FRAME)*<span class="number">1000000</span>), HRTIMER_MODE_REL);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> irqreturn_t <span class="title">aw9523_irq</span><span class="params">(<span class="keyword">int</span> irq, <span class="keyword">void</span> *handle)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">i2c_client</span> *<span class="title">client</span> = <span class="title">handle</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">aw9523_kpad_platform_data</span> *<span class="title">pdata</span>;</span></span><br><span class="line">	<span class="keyword">int</span> bm_irq_status = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	bm_mdm9640_i2c_gpio_read_irq_status(BM_MDM9640_PCIE_WAKE_SET, &amp;bm_irq_status);</span><br><span class="line">	<span class="keyword">if</span> (!bm_irq_status) &#123;</span><br><span class="line">		printk(<span class="string">"%s, it is pcie wake irq.\n"</span>, __func__);</span><br><span class="line">		<span class="keyword">return</span> IRQ_HANDLED;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	pdata = i2c_get_clientdata(client);</span><br><span class="line">	disable_irq_nosync(client-&gt;irq);</span><br><span class="line">	schedule_delayed_work(&amp;pdata-&gt;work, msecs_to_jiffies(pdata-&gt;delay));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> IRQ_HANDLED;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*********************************************************</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * aw9523 reg</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> ********************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> ssize_t <span class="title">aw9523_get_reg</span><span class="params">(struct device* cd,struct device_attribute *attr, <span class="keyword">char</span>* buf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> val = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> i = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">ssize_t</span> len = <span class="number">0</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">i2c_client</span> *<span class="title">client</span> = <span class="title">aw9523_data</span>-&gt;<span class="title">client</span>;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="number">0x30</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		aw9523_read_reg(client, i, &amp;val);</span><br><span class="line">		len += <span class="built_in">snprintf</span>(buf+len, PAGE_SIZE-len, <span class="string">"reg%2x = 0x%2x, "</span>, i, val);</span><br><span class="line">	&#125;</span><br><span class="line">	len += <span class="built_in">snprintf</span>(buf+len, PAGE_SIZE-len, <span class="string">"\n"</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> ssize_t <span class="title">aw9523_set_reg</span><span class="params">(struct device* cd, struct device_attribute *attr, <span class="keyword">const</span> <span class="keyword">char</span>* buf, <span class="keyword">size_t</span> len)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> databuf[<span class="number">2</span>];</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">i2c_client</span> *<span class="title">client</span> = <span class="title">aw9523_data</span>-&gt;<span class="title">client</span>;</span></span><br><span class="line">	<span class="keyword">if</span>(<span class="number">2</span> == <span class="built_in">sscanf</span>(buf,<span class="string">"%x %x"</span>,&amp;databuf[<span class="number">0</span>], &amp;databuf[<span class="number">1</span>]))</span><br><span class="line">	&#123;</span><br><span class="line">		aw9523_write_reg(client,databuf[<span class="number">0</span>], databuf[<span class="number">1</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="title">DEVICE_ATTR</span><span class="params">(reg, <span class="number">0660</span>, aw9523_get_reg,  aw9523_set_reg)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">aw9523_create_sysfs</span><span class="params">(struct i2c_client *client)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> err;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">device</span> *<span class="title">dev</span> = &amp;(<span class="title">client</span>-&gt;<span class="title">dev</span>);</span></span><br><span class="line">	err = device_create_file(dev, &amp;dev_attr_reg);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">aw9523_read_chipid</span><span class="params">(struct i2c_client *client)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> val;</span><br><span class="line">	<span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">	ret = aw9523_read_reg(client, ID_REG, &amp;val);</span><br><span class="line">	<span class="keyword">if</span>(!ret &amp;&amp; val != <span class="number">0x23</span>)</span><br><span class="line">		ret = -EINVAL;</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*********************************************************</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * aw9523 init</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> ********************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">aw9523_key_init</span><span class="params">(struct i2c_client *client)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> val;</span><br><span class="line">	aw9523_write_reg(client, P0_INT, DISABLE_PO_IRQ); 	<span class="comment">//disable p0 port irq 0x06</span></span><br><span class="line">	aw9523_write_reg(client, P1_INT, DISABLE_P1_IRQ); 	<span class="comment">//disable p1 port irq 0x07</span></span><br><span class="line"></span><br><span class="line">	aw9523_write_reg(client, P0_CONFIG, P0_IRQ_INPUT_MODE);	<span class="comment">//set p0 port input mode 0x04</span></span><br><span class="line">	aw9523_write_reg(client, P1_CONFIG, P1_IRQ_INPUT_MODE);	<span class="comment">//set p1 port input mode 0x05</span></span><br><span class="line">	</span><br><span class="line">	aw9523_write_reg(client,P0_LED_MODE, <span class="number">0xff</span>);</span><br><span class="line">	aw9523_write_reg(client,P0_LED_MODE, <span class="number">0xff</span>); </span><br><span class="line"></span><br><span class="line">	aw9523_write_reg(client,CTL_REG, <span class="number">0x10</span>);</span><br><span class="line">	</span><br><span class="line">	aw9523_write_reg(client,P0_OUTPUT, <span class="number">0x00</span>);</span><br><span class="line">	aw9523_write_reg(client,P1_OUTPUT, <span class="number">0x3c</span>);</span><br><span class="line">	</span><br><span class="line">	aw9523_read_reg(client, P0_INPUT, &amp;val);</span><br><span class="line">	keyst_old[<span class="number">0</span>] = val;</span><br><span class="line">	aw9523_read_reg(client, P1_INPUT, &amp;val);</span><br><span class="line">	keyst_old[<span class="number">1</span>]= val;</span><br><span class="line">	aw9523_write_reg(client, P0_INT, ENABLE_PO_IRQ); 	<span class="comment">//enable p0 port irq 0x06</span></span><br><span class="line">	aw9523_write_reg(client, P1_INT, ENABLE_P1_IRQ); 	<span class="comment">//enable p1 port irq 0x07</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bm_mdm9640_i2c_gpio_set</span><span class="params">(<span class="keyword">int</span> reg, <span class="keyword">unsigned</span> <span class="keyword">char</span> val)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">i2c_client</span> *<span class="title">client</span> = <span class="title">NULL</span>;</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> oldval = <span class="number">0</span>, setval = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> raw_output_port = <span class="number">0</span>, c_reg;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!aw9523_data)</span><br><span class="line">		<span class="keyword">return</span> ;</span><br><span class="line"></span><br><span class="line">	client = aw9523_data-&gt;client;</span><br><span class="line"></span><br><span class="line">	val = (val &gt; <span class="number">0</span> ? <span class="number">1</span> : <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (reg &gt;= <span class="number">10</span>) &#123;</span><br><span class="line">		c_reg = reg - <span class="number">10</span>;</span><br><span class="line">		raw_output_port = P1_OUTPUT;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		c_reg = reg;</span><br><span class="line">		raw_output_port = P0_OUTPUT;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	aw9523_read_reg(client, raw_output_port, &amp;oldval);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//printk("%s, read oldval: %02hhx\n", __func__, oldval);</span></span><br><span class="line"></span><br><span class="line">	setval = oldval;</span><br><span class="line">	setval &amp;= (~(<span class="number">0x1</span> &lt;&lt; c_reg)); </span><br><span class="line">	setval |= (val &lt;&lt; c_reg);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//printk("%s, set val: %02hhx, reg:%d, val:%d\n", __func__, setval, reg, val);</span></span><br><span class="line">	aw9523_write_reg(client, raw_output_port, setval);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line">EXPORT_SYMBOL(bm_mdm9640_i2c_gpio_set);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bm_mdm9640_i2c_gpio_irq_set</span><span class="params">(<span class="keyword">int</span> reg, <span class="keyword">unsigned</span> <span class="keyword">char</span> val)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">i2c_client</span> *<span class="title">client</span> = <span class="title">NULL</span>;</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> oldval = <span class="number">0</span>, setval = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> raw_config_port = <span class="number">0</span>, raw_int_port = <span class="number">0</span>, c_reg;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!aw9523_data)</span><br><span class="line">		<span class="keyword">return</span> ;</span><br><span class="line"></span><br><span class="line">	client = aw9523_data-&gt;client;</span><br><span class="line"></span><br><span class="line">	val = (val &gt; <span class="number">0</span> ? <span class="number">1</span> : <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (reg &gt;= <span class="number">10</span>) &#123;</span><br><span class="line">		c_reg = reg - <span class="number">10</span>;</span><br><span class="line">		raw_config_port = P1_CONFIG;</span><br><span class="line">		raw_int_port = P1_INT;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		c_reg = reg;</span><br><span class="line">		raw_config_port = P0_CONFIG;</span><br><span class="line">		raw_int_port = P0_INT;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// config input</span></span><br><span class="line">	aw9523_read_reg(client, raw_config_port, &amp;oldval);</span><br><span class="line"></span><br><span class="line">	printk(<span class="string">"%s, read oldval: %02hhx\n"</span>, __func__, oldval);</span><br><span class="line"></span><br><span class="line">	setval = oldval;</span><br><span class="line">	setval |= (<span class="number">0x1</span> &lt;&lt; c_reg); </span><br><span class="line"></span><br><span class="line">	printk(<span class="string">"%s, set val: %02hhx, reg:%d, val:%d\n"</span>, __func__, setval, reg, val);</span><br><span class="line">	aw9523_write_reg(client, raw_config_port, setval);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// config input</span></span><br><span class="line">	aw9523_read_reg(client, raw_int_port, &amp;oldval);</span><br><span class="line"></span><br><span class="line">	printk(<span class="string">"%s, read int oldval: %02hhx\n"</span>, __func__, oldval);</span><br><span class="line"></span><br><span class="line">	setval = oldval;</span><br><span class="line">	setval &amp;= ~(<span class="number">0x1</span> &lt;&lt; c_reg); </span><br><span class="line"></span><br><span class="line">	printk(<span class="string">"%s, set val: %02hhx, reg:%d, val:%d\n"</span>, __func__, setval, reg, val);</span><br><span class="line">	aw9523_write_reg(client, raw_int_port, setval);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line">EXPORT_SYMBOL(bm_mdm9640_i2c_gpio_irq_set);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bm_mdm9640_i2c_gpio_read_irq_status</span><span class="params">(<span class="keyword">int</span> reg, <span class="keyword">int</span> *irq_st)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">i2c_client</span> *<span class="title">client</span> = <span class="title">NULL</span>;</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span> rval = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> raw_input_port = <span class="number">0</span>, c_reg;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!aw9523_data)</span><br><span class="line">		<span class="keyword">return</span> ;</span><br><span class="line"></span><br><span class="line">	client = aw9523_data-&gt;client;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (reg &gt;= <span class="number">10</span>) &#123;</span><br><span class="line">		c_reg = reg - <span class="number">10</span>;</span><br><span class="line">		raw_input_port = P1_INPUT;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		c_reg = reg ;</span><br><span class="line">		raw_input_port = P0_INPUT;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	aw9523_read_reg(client, raw_input_port, &amp;rval);</span><br><span class="line"></span><br><span class="line">	printk(<span class="string">"%s, read oldval: %02hhx\n"</span>, __func__, rval);</span><br><span class="line"></span><br><span class="line">	*irq_st = ((rval &gt;&gt; c_reg) &amp; <span class="number">0x01</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> ;</span><br><span class="line">&#125;</span><br><span class="line">EXPORT_SYMBOL(bm_mdm9640_i2c_gpio_read_irq_status);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bm_mdm9640_check_aw9523_ready</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (aw9523_data)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">EXPORT_SYMBOL(bm_mdm9640_check_aw9523_ready);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PANEL_GPIO 8</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">get_panel_state</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">void</span> __iomem * gpio_panel_addr = ioremap_nocache(<span class="number">0x1000000</span> + PANEL_GPIO * <span class="number">0x1000</span>, <span class="number">8</span>);</span><br><span class="line">	writel(<span class="number">0x01</span>,gpio_panel_addr);</span><br><span class="line">	<span class="keyword">return</span> readl(gpio_panel_addr+<span class="number">0x04</span>)&amp;<span class="number">0x01</span>? <span class="number">1</span>:<span class="number">0</span>;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">/*********************************************************</span></span><br><span class="line"><span class="comment"> *                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               </span></span><br><span class="line"><span class="comment"> * aw9523 driver</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> ********************************************************/</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">aw9523_i2c_probe</span><span class="params">(struct i2c_client *client,</span></span></span><br><span class="line"><span class="function"><span class="params">			 <span class="keyword">const</span> struct i2c_device_id *id)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">aw9523_kpad_platform_data</span> *<span class="title">pdata</span> = <span class="title">client</span>-&gt;<span class="title">dev</span>.<span class="title">platform_data</span>;</span></span><br><span class="line">	<span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> i =<span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (!i2c_check_functionality(client-&gt;adapter,</span><br><span class="line">					I2C_FUNC_SMBUS_BYTE_DATA)) &#123;</span><br><span class="line">		dev_err(&amp;client-&gt;dev, <span class="string">"SMBUS Byte Data not Supported\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> -EIO;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(!get_panel_state())&#123;</span><br><span class="line">		dev_err(&amp;client-&gt;dev, <span class="string">"the panel can not use i2c\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> -ENOMEM;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	pdata = devm_kzalloc(&amp;client-&gt;dev,<span class="keyword">sizeof</span>(struct aw9523_kpad_platform_data), GFP_KERNEL);</span><br><span class="line">	<span class="keyword">if</span> (!pdata) </span><br><span class="line">	&#123;</span><br><span class="line">		dev_err(&amp;client-&gt;dev, <span class="string">"Failed to allocate memory\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> -ENOMEM;</span><br><span class="line">	&#125;</span><br><span class="line">	aw9523_data = pdata;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/* seset &amp; int Pins  */</span></span><br><span class="line">	pdata-&gt;pinctrl = devm_pinctrl_get(&amp;client-&gt;dev);</span><br><span class="line">	<span class="keyword">if</span> (IS_ERR(pdata-&gt;pinctrl)) &#123;</span><br><span class="line">		pr_err(<span class="string">"%s:failed to get pinctrl\n"</span>, __func__);</span><br><span class="line">		<span class="keyword">goto</span> err;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	pdata-&gt;rst_state_low = pinctrl_lookup_state(pdata-&gt;pinctrl, <span class="string">"aw9523_reset_low"</span>);</span><br><span class="line">	<span class="keyword">if</span> (IS_ERR(pdata-&gt;rst_state_low)) &#123;</span><br><span class="line">		pr_err(<span class="string">"%s:can not get reset pinstate\n"</span>, __func__);</span><br><span class="line">		<span class="keyword">goto</span> err;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	pdata-&gt;rst_state_high = pinctrl_lookup_state(pdata-&gt;pinctrl, <span class="string">"aw9523_reset_high"</span>);</span><br><span class="line">	<span class="keyword">if</span> (IS_ERR(pdata-&gt;rst_state_high)) &#123;</span><br><span class="line">		pr_err(<span class="string">"%s:can not get reset pinstate\n"</span>, __func__);</span><br><span class="line">		<span class="keyword">goto</span> err;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	pdata-&gt;irq_state = pinctrl_lookup_state(pdata-&gt;pinctrl, <span class="string">"aw9523_eint"</span>);</span><br><span class="line">	<span class="keyword">if</span> (IS_ERR(pdata-&gt;irq_state)) &#123;</span><br><span class="line">		pr_err(<span class="string">"%s:can not get irq pinstate\n"</span>, __func__);</span><br><span class="line">		<span class="keyword">goto</span> err;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	ret= pinctrl_select_state(pdata-&gt;pinctrl, pdata-&gt;rst_state_high);</span><br><span class="line">	<span class="keyword">if</span> (ret)&#123;</span><br><span class="line">		pr_err(<span class="string">"%s:set reset pin state failed!\n"</span>, __func__);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	ret = pinctrl_select_state(pdata-&gt;pinctrl, pdata-&gt;irq_state);</span><br><span class="line">	<span class="keyword">if</span> (ret)&#123;</span><br><span class="line">		pr_err(<span class="string">"%s:set irq pin state failed!\n"</span>, __func__);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	pdata-&gt;rst_gpio = of_get_named_gpio(client-&gt;dev.of_node, <span class="string">"awinic,reset-gpio"</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> ((!gpio_is_valid(pdata-&gt;rst_gpio)))&#123;</span><br><span class="line">		<span class="keyword">goto</span> err;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	ret = gpio_request(pdata-&gt;rst_gpio, <span class="string">"aw9523-reset-keys"</span>);</span><br><span class="line">	<span class="keyword">if</span> (ret == <span class="number">0</span>) &#123;</span><br><span class="line">		gpio_set_value(pdata-&gt;rst_gpio, <span class="number">0</span>);</span><br><span class="line">		msleep(<span class="number">1</span>);</span><br><span class="line">		gpio_set_value(pdata-&gt;rst_gpio, <span class="number">1</span>);</span><br><span class="line">		msleep(<span class="number">1</span>);</span><br><span class="line">	&#125;<span class="keyword">else</span> <span class="keyword">if</span>(ret !=- <span class="number">16</span>)&#123;</span><br><span class="line">		dev_err(&amp;client-&gt;dev, <span class="string">"%s: unable to request gpio [%d]\n"</span>,</span><br><span class="line">			__func__, pdata-&gt;rst_gpio);</span><br><span class="line">		<span class="keyword">goto</span> err;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/* reset &amp; int Pins  end*/</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* hardware reset */</span></span><br><span class="line">	pdata-&gt;client = client;</span><br><span class="line">	mutex_init(&amp;pdata-&gt;read_write_lock);</span><br><span class="line">	i2c_set_clientdata(client, pdata);</span><br><span class="line">	<span class="keyword">if</span>(aw9523_read_chipid(client)) &#123;</span><br><span class="line">		dev_err(&amp;client-&gt;dev, <span class="string">"%s: read_chipid error\n"</span>, __func__);</span><br><span class="line">		<span class="keyword">goto</span> err_rst_gpio;</span><br><span class="line">	&#125;</span><br><span class="line">	INIT_DELAYED_WORK(&amp;pdata-&gt;work, aw9523_int_work);</span><br><span class="line">	pdata-&gt;delay = <span class="number">10</span>;</span><br><span class="line">	<span class="comment">/* hardware reset end */</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* key report */</span></span><br><span class="line">	pdata-&gt;input = input_allocate_device();</span><br><span class="line">	<span class="keyword">if</span> (!pdata-&gt;input) &#123;</span><br><span class="line">		dev_err(&amp;client-&gt;dev, <span class="string">"%s: failed to allocate input device\n"</span>, __func__);</span><br><span class="line">		<span class="keyword">goto</span> err_rst_gpio;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	pdata-&gt;input-&gt;name = <span class="string">"aw9523-key"</span>;</span><br><span class="line">	pdata-&gt;input-&gt;phys = <span class="string">"aw9523-keys/input0"</span>;</span><br><span class="line">	pdata-&gt;input-&gt;dev.parent = &amp;client-&gt;dev;</span><br><span class="line">	pdata-&gt;keymap_len = <span class="keyword">sizeof</span>(key_map)/<span class="keyword">sizeof</span>(struct keymap);</span><br><span class="line">	pdata-&gt;keymap = (struct keymap *)&amp;key_map;</span><br><span class="line"></span><br><span class="line">	input_set_drvdata(pdata-&gt;input, pdata);</span><br><span class="line"></span><br><span class="line">	__set_bit(EV_KEY, pdata-&gt;input-&gt;evbit);</span><br><span class="line">	__set_bit(EV_SYN, pdata-&gt;input-&gt;evbit);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; pdata-&gt;keymap_len; i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(pdata-&gt;keymap[i].name[<span class="number">0</span>]==<span class="string">'\0'</span>) <span class="keyword">continue</span>;</span><br><span class="line">		__set_bit(pdata-&gt;keymap[i].key_code, pdata-&gt;input-&gt;keybit);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	ret = input_register_device(pdata-&gt;input);</span><br><span class="line">	<span class="keyword">if</span> (ret) &#123;</span><br><span class="line">		dev_err(&amp;client-&gt;dev, <span class="string">"unable to register input device\n"</span>);</span><br><span class="line">		<span class="keyword">goto</span> err_free_input;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/* key report end */</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">/* interrupt work */</span></span><br><span class="line">	pdata-&gt;irq_gpio = of_get_named_gpio(client-&gt;dev.of_node, <span class="string">"awinic,irq-gpio"</span>, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">if</span> ((!gpio_is_valid(pdata-&gt;irq_gpio)))&#123;</span><br><span class="line">		<span class="keyword">goto</span> err_free_dev;</span><br><span class="line">	&#125;</span><br><span class="line">	ret = gpio_request(pdata-&gt;irq_gpio, <span class="string">"aw9523-keys"</span>);</span><br><span class="line">	<span class="keyword">if</span> (ret) &#123;</span><br><span class="line">		dev_err(&amp;client-&gt;dev, <span class="string">"%s: unable to request gpio [%d]\n"</span>,</span><br><span class="line">			__func__, pdata-&gt;irq_gpio);</span><br><span class="line">		<span class="keyword">goto</span> err_free_dev;</span><br><span class="line">	&#125;</span><br><span class="line">	ret = gpio_direction_input(pdata-&gt;irq_gpio);</span><br><span class="line">	<span class="keyword">if</span> (ret) &#123;</span><br><span class="line">		dev_err(&amp;client-&gt;dev, <span class="string">"%s: unable to set direction for gpio [%d]\n"</span>,</span><br><span class="line">			__func__, pdata-&gt;irq_gpio);</span><br><span class="line">		<span class="keyword">goto</span> err_irq_gpio;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	client-&gt;irq = gpio_to_irq(pdata-&gt;irq_gpio);</span><br><span class="line">	<span class="keyword">if</span> (client-&gt;irq &lt; <span class="number">0</span>) &#123;</span><br><span class="line">		ret = client-&gt;irq;</span><br><span class="line">		<span class="keyword">goto</span> err_irq_gpio;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/* hrtimer */</span></span><br><span class="line">	INIT_WORK(&amp;pdata-&gt;key_work, aw9523_key_work);</span><br><span class="line">	hrtimer_init(&amp;pdata-&gt;key_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);</span><br><span class="line">	pdata-&gt;key_timer.function = aw9523_key_timer_func;</span><br><span class="line">	<span class="comment">/* hrtimer end */</span></span><br><span class="line">	</span><br><span class="line">	ret = devm_request_threaded_irq(&amp;client-&gt;dev, client-&gt;irq, <span class="literal">NULL</span>,</span><br><span class="line">			aw9523_irq, IRQF_TRIGGER_LOW | IRQF_ONESHOT | IRQF_SHARED,</span><br><span class="line">			<span class="string">"aw9523_irq"</span>, client);</span><br><span class="line">	<span class="keyword">if</span> (ret) &#123;</span><br><span class="line">		dev_err(&amp;client-&gt;dev, <span class="string">"%s: failed aw9523 irq=%d request ret = %d\n"</span>,</span><br><span class="line">			__func__, client-&gt;irq, ret);</span><br><span class="line">			<span class="keyword">goto</span> err_irq_gpio;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		disable_irq_nosync(client-&gt;irq);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	device_init_wakeup(&amp;client-&gt;dev, <span class="number">1</span>);</span><br><span class="line">	aw9523_create_sysfs(client);</span><br><span class="line">	aw9523_key_init(client);</span><br><span class="line">	enable_irq(client-&gt;irq);</span><br><span class="line">	pr_err(<span class="string">"%s:%d key success\n"</span>, __func__,__LINE__);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">err_irq_gpio:</span><br><span class="line">	cancel_work_sync(&amp;pdata-&gt;key_work);</span><br><span class="line">	gpio_free(pdata-&gt;irq_gpio);</span><br><span class="line">err_free_dev:	</span><br><span class="line">	input_unregister_device(pdata-&gt;input);</span><br><span class="line">err_free_input:</span><br><span class="line">	input_free_device(pdata-&gt;input);</span><br><span class="line">err_rst_gpio:</span><br><span class="line">	gpio_free(pdata-&gt;rst_gpio);</span><br><span class="line">	mutex_destroy(&amp;pdata-&gt;read_write_lock);</span><br><span class="line">err:</span><br><span class="line">	kfree(pdata);</span><br><span class="line">	aw9523_data = <span class="literal">NULL</span>;</span><br><span class="line">	pr_err(<span class="string">"%s:%d key failed\n"</span>, __func__,__LINE__);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">aw9523_i2c_remove</span><span class="params">(struct i2c_client *client)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">aw9523_kpad_platform_data</span> *<span class="title">pdata</span> = <span class="title">i2c_get_clientdata</span>(<span class="title">client</span>);</span></span><br><span class="line">	<span class="keyword">if</span>(!pdata)</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	aw9523_write_reg(client, <span class="number">0x00</span>, <span class="number">0</span>);</span><br><span class="line">	free_irq(client-&gt;irq, pdata);</span><br><span class="line">	cancel_delayed_work_sync(&amp;pdata-&gt;work);</span><br><span class="line">	cancel_work_sync(&amp;pdata-&gt;key_work);</span><br><span class="line">	gpio_free(pdata-&gt;irq_gpio);</span><br><span class="line">	input_unregister_device(pdata-&gt;input);</span><br><span class="line">	input_free_device(pdata-&gt;input);</span><br><span class="line">	gpio_free(pdata-&gt;rst_gpio);</span><br><span class="line">	mutex_destroy(&amp;pdata-&gt;read_write_lock);</span><br><span class="line">	kfree(pdata);</span><br><span class="line">	aw9523_data = <span class="literal">NULL</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">of_device_id</span> <span class="title">aw9523_keypad_of_match</span>[] = &#123;</span></span><br><span class="line">	&#123; .compatible = <span class="string">"awinic,aw9523_key"</span>,&#125;,</span><br><span class="line">	&#123;&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">i2c_device_id</span> <span class="title">aw9523_i2c_id</span>[] = &#123;</span></span><br><span class="line">	&#123;<span class="string">"aw9523_key"</span>, <span class="number">0</span>&#125;,</span><br><span class="line">	&#123;&#125;,</span><br><span class="line">&#125;;</span><br><span class="line">MODULE_DEVICE_TABLE(i2c, aw9523_i2c_id);</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">i2c_driver</span> <span class="title">aw9523_i2c_driver</span> = &#123;</span></span><br><span class="line">	.driver = &#123;</span><br><span class="line">		.name = <span class="string">"aw9523_key"</span>,</span><br><span class="line">		.owner = THIS_MODULE,</span><br><span class="line">		.of_match_table = aw9523_keypad_of_match,</span><br><span class="line">	&#125;,</span><br><span class="line">	.probe = aw9523_i2c_probe,</span><br><span class="line">	.remove = aw9523_i2c_remove,</span><br><span class="line">	.id_table = aw9523_i2c_id,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> __<span class="function">init <span class="title">aw9523_i2c_init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">	ret = i2c_add_driver(&amp;aw9523_i2c_driver);</span><br><span class="line">	<span class="keyword">if</span> (ret) &#123;</span><br><span class="line">		pr_err(<span class="string">"fail to add aw9523 device into i2c\n"</span>);</span><br><span class="line">		<span class="keyword">return</span> ret;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line">subsys_initcall(aw9523_i2c_init);</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __<span class="function"><span class="built_in">exit</span> <span class="title">aw9523_i2c_exit</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	i2c_del_driver(&amp;aw9523_i2c_driver);</span><br><span class="line">&#125;</span><br><span class="line">module_exit(aw9523_i2c_exit);</span><br><span class="line"></span><br><span class="line">MODULE_AUTHOR(<span class="string">"liweilei@awinic.com.cn"</span>);</span><br><span class="line">MODULE_DESCRIPTION(<span class="string">"AW9523B Keypad driver"</span>);</span><br><span class="line">MODULE_LICENSE(<span class="string">"GPL"</span>);</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>liuqi</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://www.iliuqi.com/2019/05/11/aw9523芯片驱动/" title="aw9523芯片驱动">http://www.iliuqi.com/2019/05/11/aw9523芯片驱动/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/i2c-driver/" rel="tag"><i class="fa fa-tag"></i> i2c driver</a>
+          
+            <a href="/tags/linux-device-driver/" rel="tag"><i class="fa fa-tag"></i> linux device driver</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/11/smb358-charger驱动/" rel="next" title="smb358_charger驱动">
+                <i class="fa fa-chevron-left"></i> smb358_charger驱动
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/14/wlan-firmware-log/" rel="prev" title="wlan firmware log">
+                wlan firmware log <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zOTQzMS8xNTk1OA=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/personal.gif" alt="liuqi">
+            
+              <p class="site-author-name" itemprop="name">liuqi</p>
+              <div class="site-description motion-element" itemprop="description">男儿何不带吴钩，收取关山五十州</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/liuqi605752176" title="GitHub &rarr; https://github.com/liuqi605752176" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liuqi605752176@outlook.com" title="E-Mail &rarr; mailto:liuqi605752176@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2209902513" title="Weibo &rarr; https://weibo.com/2209902513" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+		  
+	
+		<div>
+			 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="280" height="86" src="//music.163.com/outchain/player?type=2&id=461855254&auto=1&height=66"></iframe>  
+		</div>
+	
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#硬件连接图"><span class="nav-number">1.</span> <span class="nav-text">硬件连接图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#芯片介绍"><span class="nav-number">2.</span> <span class="nav-text">芯片介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#寄存器列表"><span class="nav-number">2.1.</span> <span class="nav-text">寄存器列表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPIO输入输出方向选择"><span class="nav-number">2.2.</span> <span class="nav-text">GPIO输入输出方向选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPIO输出驱动"><span class="nav-number">2.3.</span> <span class="nav-text">GPIO输出驱动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPIO输入状态查询"><span class="nav-number">2.4.</span> <span class="nav-text">GPIO输入状态查询</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中断功能"><span class="nav-number">2.5.</span> <span class="nav-text">中断功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复位功能"><span class="nav-number">2.6.</span> <span class="nav-text">复位功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#寄存器详细描述"><span class="nav-number">2.7.</span> <span class="nav-text">寄存器详细描述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#INPUT-PORT0-00H-，输入状态寄存器"><span class="nav-number">2.7.1.</span> <span class="nav-text">INPUT_PORT0(00H) ，输入状态寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#INPUT-PORT1-01H-，输入状态寄存器"><span class="nav-number">2.7.2.</span> <span class="nav-text">INPUT_PORT1(01H)，输入状态寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OUTPUT-PORT0-02H-，输出状态寄存器"><span class="nav-number">2.7.3.</span> <span class="nav-text">OUTPUT_PORT0(02H)，输出状态寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OUTPUT-PORT1-03H-，输出状态寄存器"><span class="nav-number">2.7.4.</span> <span class="nav-text">OUTPUT_PORT1(03H)，输出状态寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#INTN-PORT0-06H-，中断使能寄存器"><span class="nav-number">2.7.5.</span> <span class="nav-text">INTN_PORT0(06H)，中断使能寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#INTN-PORT1-07H-，中断使能寄存器"><span class="nav-number">2.7.6.</span> <span class="nav-text">INTN_PORT1(07H)，中断使能寄存器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GPIO配置表"><span class="nav-number">3.</span> <span class="nav-text">GPIO配置表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设备树配置"><span class="nav-number">4.</span> <span class="nav-text">设备树配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AW9523驱动流程"><span class="nav-number">5.</span> <span class="nav-text">AW9523驱动流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#源代码"><span class="nav-number">6.</span> <span class="nav-text">源代码</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-liuqi"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liuqi</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.1"></script>
+
+  <script src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+<script type="text/javascript" src="/js/src/photoswipe.min.js?v="></script>
+<script type="text/javascript" src="/js/src/photoswipe-ui-default.min.js?v="></script>
+
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script>
+  window.livereOptions = {
+    refer: '2019/05/11/aw9523芯片驱动/'
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
