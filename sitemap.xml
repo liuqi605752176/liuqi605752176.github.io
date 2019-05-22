@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.iliuqi.com/photos/index.html</loc>
+    
+    <lastmod>2019-05-22T11:16:45.928Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.iliuqi.com/photos/photoslist.json</loc>
     
     <lastmod>2019-05-22T10:42:08.437Z</lastmod>
@@ -9,9 +16,9 @@
   </url>
   
   <url>
-    <loc>http://www.iliuqi.com/photos/index.html</loc>
+    <loc>http://www.iliuqi.com/tags/index.html</loc>
     
-    <lastmod>2019-05-22T10:29:31.768Z</lastmod>
+    <lastmod>2019-05-22T09:59:52.575Z</lastmod>
     
   </url>
   
@@ -24,13 +31,6 @@
   
   <url>
     <loc>http://www.iliuqi.com/categories/index.html</loc>
-    
-    <lastmod>2019-05-22T09:59:52.575Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.iliuqi.com/tags/index.html</loc>
     
     <lastmod>2019-05-22T09:59:52.575Z</lastmod>
     
