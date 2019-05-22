@@ -2,9 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://www.iliuqi.com/2019/05/22/the-girl/</loc>
+    
+    <lastmod>2019-05-22T04:54:40.866Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://www.iliuqi.com/about/index.html</loc>
     
-    <lastmod>2019-05-22T03:21:25.091Z</lastmod>
+    <lastmod>2019-05-22T03:23:52.668Z</lastmod>
     
   </url>
   
@@ -12,13 +19,6 @@
     <loc>http://www.iliuqi.com/photos/index.html</loc>
     
     <lastmod>2019-05-19T02:12:38.367Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://www.iliuqi.com/2019/05/08/hello-world/</loc>
-    
-    <lastmod>2019-05-19T01:38:19.858Z</lastmod>
     
   </url>
   
@@ -37,16 +37,16 @@
   </url>
   
   <url>
-    <loc>http://www.iliuqi.com/tags/index.html</loc>
+    <loc>http://www.iliuqi.com/2019/05/08/hello-world/</loc>
     
     <lastmod>2019-05-19T01:38:19.858Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.iliuqi.com/2019/05/11/aw9523%E8%8A%AF%E7%89%87%E9%A9%B1%E5%8A%A8/</loc>
+    <loc>http://www.iliuqi.com/tags/index.html</loc>
     
-    <lastmod>2019-05-19T01:38:19.846Z</lastmod>
+    <lastmod>2019-05-19T01:38:19.858Z</lastmod>
     
   </url>
   
@@ -58,14 +58,21 @@
   </url>
   
   <url>
-    <loc>http://www.iliuqi.com/2019/05/09/rtl8192%E7%A7%BB%E6%A4%8D%E4%BB%A5%E5%8F%8A802-11%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5/</loc>
+    <loc>http://www.iliuqi.com/2019/05/11/aw9523%E8%8A%AF%E7%89%87%E9%A9%B1%E5%8A%A8/</loc>
+    
+    <lastmod>2019-05-19T01:38:19.846Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.iliuqi.com/2019/05/11/smb358-charger%E9%A9%B1%E5%8A%A8/</loc>
     
     <lastmod>2019-05-19T01:38:19.842Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://www.iliuqi.com/2019/05/11/smb358-charger%E9%A9%B1%E5%8A%A8/</loc>
+    <loc>http://www.iliuqi.com/2019/05/09/rtl8192%E7%A7%BB%E6%A4%8D%E4%BB%A5%E5%8F%8A802-11%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5/</loc>
     
     <lastmod>2019-05-19T01:38:19.842Z</lastmod>
     
