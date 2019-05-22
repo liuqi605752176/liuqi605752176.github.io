@@ -96,7 +96,7 @@ def handle_photo():
     -----------
     最后将data.json文件存到博客的source/photos文件夹下
     '''
-    src_dir, des_dir = "src_photos/", "min_photos/"
+    src_dir, des_dir = "photos/", "src_photos/"
     file_list = list_img_file(src_dir)
     list_info = []
     for i in range(len(file_list)):
@@ -169,7 +169,7 @@ def git_operation():
 #     git_operation()    # 提交到github仓库
 #     handle_photo()     # 将文件处理成json格式，存到博客仓库中
 cut_photo()        # 裁剪图片，裁剪成正方形，去中间部分
-compress_photo()   # 压缩图片，并保存到mini_photos文件夹下
+#compress_photo()   # 压缩图片，并保存到mini_photos文件夹下
 #git_operation()    # 提交到github仓库
 handle_photo()     # 将文件处理成json格式，存到博客仓库中   
     
