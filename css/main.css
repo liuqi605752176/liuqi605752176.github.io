@@ -1779,7 +1779,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #ff32a6;
+  background: #ecb8ff;
 }
 .feed-link,
 .chat {
@@ -2534,4 +2534,9 @@ img.img-topic {
 .ImageInCard img {
   padding: 0 0 0 0;
   border-radius: 8px;
+}
+.TextInCard {
+  line-height: 54px;
+  background-color: #fff;
+  font-size: 24px;
 }
