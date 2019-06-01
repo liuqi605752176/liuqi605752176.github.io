@@ -85,7 +85,7 @@
     back2top_sidebar: false,
     fancybox: true,
     fastclick: false,
-    lazyload: false,
+    lazyload: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     algolia: {
@@ -108,17 +108,17 @@
 <meta name="keywords" content="mqtt">
 <meta property="og:type" content="article">
 <meta property="og:title" content="按摩椅项目">
-<meta property="og:url" content="http://iliuqi.com/2019/05/14/按摩椅项目/index.html">
-<meta property="og:site_name" content="小白成长记">
+<meta property="og:url" content="http://www.iliuqi.com/2019/05/14/按摩椅项目/index.html">
+<meta property="og:site_name" content="那些年的旧时光">
 <meta property="og:description" content="原理 此按摩椅由四部分组成：   按摩椅硬件 单片机（后续文章中以U表示） 4G模块（后续文章中以M表示） 阿里云服务器（后续文章中以S表示）   单片机的功能主要是控制按摩椅操作，比如力度，手法等。使用串口与4G模块通讯。 4G模块的功能主要是与服务器进行通讯，接收服务器指令，通过串口下发指令到下位机  硬件接口  数据通信格式单片机-&amp;gt;4G模块指令概括 SOI(1)+ACK/CMD(1)">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://iliuqi.com/2019/05/14/按摩椅项目/4G模块实物图.png">
-<meta property="og:image" content="http://iliuqi.com/2019/05/14/按摩椅项目/单片机实物图.png">
-<meta property="og:updated_time" content="2019-05-22T09:59:52.555Z">
+<meta property="og:image" content="http://www.iliuqi.com/2019/05/14/按摩椅项目/4G模块实物图.png">
+<meta property="og:image" content="http://www.iliuqi.com/2019/05/14/按摩椅项目/单片机实物图.png">
+<meta property="og:updated_time" content="2019-05-28T08:07:33.173Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="按摩椅项目">
 <meta name="twitter:description" content="原理 此按摩椅由四部分组成：   按摩椅硬件 单片机（后续文章中以U表示） 4G模块（后续文章中以M表示） 阿里云服务器（后续文章中以S表示）   单片机的功能主要是控制按摩椅操作，比如力度，手法等。使用串口与4G模块通讯。 4G模块的功能主要是与服务器进行通讯，接收服务器指令，通过串口下发指令到下位机  硬件接口  数据通信格式单片机-&amp;gt;4G模块指令概括 SOI(1)+ACK/CMD(1)">
-<meta name="twitter:image" content="http://iliuqi.com/2019/05/14/按摩椅项目/4G模块实物图.png">
+<meta name="twitter:image" content="http://www.iliuqi.com/2019/05/14/按摩椅项目/4G模块实物图.png">
 
 
 
@@ -126,7 +126,7 @@
 
   
   
-  <link rel="canonical" href="http://iliuqi.com/2019/05/14/按摩椅项目/">
+  <link rel="canonical" href="http://www.iliuqi.com/2019/05/14/按摩椅项目/">
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>按摩椅项目 | 小白成长记</title>
+  <title>按摩椅项目 | 那些年的旧时光</title>
   
 
 
@@ -213,7 +213,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
     <div class="custom-logo-site-title">
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">小白成长记</span>
+        <span class="site-title">那些年的旧时光</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -338,8 +338,33 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
     <a href="/about" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
 
   </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-playlist">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/playlist" rel="section"><i class="menu-item-icon fa fa-fw fa-music"></i> <br>音乐</a>
+
+  </li>
 
       
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
       
     </ul>
   
@@ -349,6 +374,27 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
 
   
 
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
   
 </nav>
 
@@ -387,7 +433,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://iliuqi.com/2019/05/14/按摩椅项目/">
+    <link itemprop="mainEntityOfPage" href="http://www.iliuqi.com/2019/05/14/按摩椅项目/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="liuqi">
@@ -396,7 +442,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小白成长记">
+      <meta itemprop="name" content="那些年的旧时光">
     </span>
 
     
@@ -739,22 +785,21 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
 <blockquote>
 <p>上述为定义的指令集</p>
 </blockquote>
-<blockquote>
+<h2 id="messageArrived函数"><a href="#messageArrived函数" class="headerlink" title="messageArrived函数"></a>messageArrived函数</h2><blockquote>
 <p>服务器与4G模块的通讯函数是massageArived函数</p>
 </blockquote>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**********************************************************************</span></span><br><span class="line"><span class="comment"> *            接收消息的回调函数</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 说明：当其它设备的消息到达时，此函数将被执行。</span></span><br><span class="line"><span class="comment"> * 注意：此回调函数中用户在做业务处理时不要使用耗时操作，否则会阻塞接收通道</span></span><br><span class="line"><span class="comment"> **********************************************************************/</span> </span><br><span class="line"><span class="comment">//Server -&gt; Client包 ,服务器下发的控制报(重启包/授权包...) </span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">messageArrived</span><span class="params">(MessageData *md)</span>                               </span></span><br><span class="line"><span class="function"></span>&#123;                                                                          </span><br><span class="line">    <span class="comment">//接收消息缓存                                                        </span></span><br><span class="line"> 	<span class="keyword">char</span> msg[MSG_LEN_MAX] = &#123;<span class="number">0</span>&#125;;                                             </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">uart_msg</span> <span class="title">ser_msg</span>;</span>                                            	 </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">uart_msg</span> <span class="title">respond_msg</span>;</span>                                        	</span><br><span class="line">    <span class="comment">//发送第三方操作指令调用</span></span><br><span class="line">    <span class="keyword">char</span> cmd[<span class="number">11</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">char</span> parm[AMY_PARM_LEN] = &#123;<span class="number">0</span>&#125;;                                                                     <span class="keyword">int</span> status = <span class="number">-1</span>;                                                                                   MQTTMessage *message = md-&gt;message;                                                                 <span class="keyword">if</span>(message-&gt;payloadlen &gt; MSG_LEN_MAX - <span class="number">1</span>)                                                           &#123;                                                                                                       <span class="built_in">printf</span>(<span class="string">"process part of receive message\n"</span>);                                                       message-&gt;payloadlen = MSG_LEN_MAX - <span class="number">1</span>;                                                         &#125;                                                                                                   <span class="comment">//复制接收消息到本地缓存 </span></span><br><span class="line">    <span class="built_in">memcpy</span>(msg,message-&gt;payload,message-&gt;payloadlen);                                                   <span class="comment">//to-do此处可以增加用户自己业务逻辑，例如：开关灯等操作   </span></span><br><span class="line">    <span class="comment">//打印接收消息   </span></span><br><span class="line">    IOT_LOG(<span class="string">"###################################\n"</span>);                                                   IOT_LOG(<span class="string">"subscribe Message: [%s]\n"</span>, msg);                                                         IOT_LOG(<span class="string">"###################################\n"</span>);                                                   <span class="keyword">if</span> (parse_server_message(msg, &amp;ser_msg) != TRUE_IOT)                                               &#123;                                                                                                       <span class="built_in">printf</span>(<span class="string">"subscribe Message: not a valied uart cmd or data messages, ignore this\n"</span>);                 <span class="keyword">return</span>;                                                                                         &#125;                                                                                                     <span class="comment">//授权指令，value有效，data无效</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (ser_msg.type == TYPE_SERVER_CTL)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"subscribe Message: authorization or not\n"</span>);</span><br><span class="line">        respond_msg.type = TYPE_CLIENT_CTL_RESPONED;</span><br><span class="line">        <span class="comment">//respond_msg.hex_no = 0x100;</span></span><br><span class="line">        respond_msg.hex_no = ser_msg.hex_no;</span><br><span class="line">        respond_msg.value = <span class="number">0</span>; <span class="comment">//1: process successful, 0:process failed.</span></span><br><span class="line">        <span class="keyword">if</span> (uart_ctl_trans(uart_fd, ser_msg.value) &gt;= <span class="number">0</span>)</span><br><span class="line">        &#123;                                                                                                       respond_msg.value = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pub_uart_msg(&amp;client, &amp;respond_msg);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//暂停与继续指令</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(ser_msg.type == TYPE_SERVER_START_OR_PAUSE)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"subscribe Message: start or pause!\n"</span>);</span><br><span class="line">        cmd[<span class="number">0</span>] = <span class="number">0x07</span>;</span><br><span class="line">        cmd[<span class="number">1</span>] = ser_msg.value;</span><br><span class="line">        status = uart_data_trans(uart_fd, cmd, parm);</span><br><span class="line">        <span class="keyword">if</span> (status &lt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            IOT_LOG(<span class="string">"Third-party directives send error: please check!\n"</span>);</span><br><span class="line">            <span class="keyword">return</span> ;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//第三方指令</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(ser_msg.type == TYPE_SERVER_OPERATE)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Operate Message: ser_msg.value = %d,ser_msg.hex_no = %d,ser_msg.data = %d\n"</span>,</span><br><span class="line">                                            ser_msg.value,ser_msg.hex_no,ser_msg.data);</span><br><span class="line">        <span class="comment">//模块到单片机的指令值比服务器到模块的指令少1</span></span><br><span class="line">        <span class="comment">//第三方指令2,3,4,5,6,7对应于C-&gt;U:1,2,3,4,5,6</span></span><br><span class="line">        <span class="comment">//ZERO_GRAVITY                  = 2,    //零重力</span></span><br><span class="line">        <span class="comment">//ELEVATING_REGULATION          = 3,    //升降调节</span></span><br><span class="line">        <span class="comment">//BAROMETRIC_GEAR_REGULATION    = 4,    //气压档位调节</span></span><br><span class="line">        <span class="comment">//BACK_MASSAGE_STRENRTH         = 5,    //背部按摩调节</span></span><br><span class="line">        <span class="comment">//REMOTE_VOLUME_CONTROL         = 6,    //音量调节</span></span><br><span class="line">        <span class="comment">//MASSAGE_TECHNIQUE             = 7,    //按摩手法</span></span><br><span class="line">        <span class="keyword">if</span>(ser_msg.value == ZERO_GRAVITY || ser_msg.value == ELEVATING_REGULATION || ser_msg.value == BAROMETRIC_GEAR_REGULATION</span><br><span class="line">                        || ser_msg.value == BACK_MASSAGE_STRENRTH || ser_msg.value == REMOTE_VOLUME_CONTROL || ser_msg.value == MASSAGE_TECHNIQUE)</span><br><span class="line">        &#123;</span><br><span class="line">            cmd[<span class="number">0</span>] = ser_msg.value - <span class="number">1</span>;</span><br><span class="line">            cmd[<span class="number">1</span>] = ser_msg.data;</span><br><span class="line">            status = uart_data_trans(uart_fd, cmd, parm);</span><br><span class="line">            <span class="keyword">if</span> (status &lt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                IOT_LOG(<span class="string">"Third-party directives send error: please check!\n"</span>);</span><br><span class="line">                <span class="keyword">return</span> ;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;                                                                                               &#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>这里面涉及的就是将服务器发送过来的数据重新封装从串口发送给下位单片机！</p>
-<p>uart_data_trans()函数: 将数据包发送到单片机</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**********************************************************************</span></span><br><span class="line"><span class="comment"> *            接收消息的回调函数</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 说明：当其它设备的消息到达时，此函数将被执行。</span></span><br><span class="line"><span class="comment"> * 注意：此回调函数中用户在做业务处理时不要使用耗时操作，否则会阻塞接收通道</span></span><br><span class="line"><span class="comment"> **********************************************************************/</span> </span><br><span class="line"><span class="comment">//Server -&gt; Client包 ,服务器下发的控制报(重启包/授权包...) </span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">messageArrived</span><span class="params">(MessageData *md)</span>                               </span></span><br><span class="line"><span class="function"></span>&#123;                                                                          </span><br><span class="line">    <span class="comment">//接收消息缓存                                                        </span></span><br><span class="line"> 	<span class="keyword">char</span> msg[MSG_LEN_MAX] = &#123;<span class="number">0</span>&#125;;                                             </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">uart_msg</span> <span class="title">ser_msg</span>;</span>                                            	 </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">uart_msg</span> <span class="title">respond_msg</span>;</span>                                        	</span><br><span class="line">    <span class="comment">//发送第三方操作指令调用</span></span><br><span class="line">    <span class="keyword">char</span> cmd[<span class="number">11</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">char</span> parm[AMY_PARM_LEN] = &#123;<span class="number">0</span>&#125;; </span><br><span class="line">	<span class="keyword">int</span> status = <span class="number">-1</span>;   </span><br><span class="line">	MQTTMessage *message = md-&gt;message;      </span><br><span class="line">	<span class="keyword">if</span>(message-&gt;payloadlen &gt; MSG_LEN_MAX - <span class="number">1</span>)    </span><br><span class="line">	&#123;               </span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"process part of receive message\n"</span>);         </span><br><span class="line">		message-&gt;payloadlen = MSG_LEN_MAX - <span class="number">1</span>;   </span><br><span class="line">	&#125;                   </span><br><span class="line">	<span class="comment">//复制接收消息到本地缓存 </span></span><br><span class="line">    <span class="built_in">memcpy</span>(msg,message-&gt;payload,message-&gt;payloadlen);     </span><br><span class="line">	<span class="comment">//to-do此处可以增加用户自己业务逻辑，例如：开关灯等操作   </span></span><br><span class="line">    <span class="comment">//打印接收消息   </span></span><br><span class="line">    IOT_LOG(<span class="string">"###################################\n"</span>);          </span><br><span class="line">	IOT_LOG(<span class="string">"subscribe Message: [%s]\n"</span>, msg);       </span><br><span class="line">	IOT_LOG(<span class="string">"###################################\n"</span>);      </span><br><span class="line">	<span class="keyword">if</span> (parse_server_message(msg, &amp;ser_msg) != TRUE_IOT)     </span><br><span class="line">	&#123;      </span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"subscribe Message: not a valied uart cmd or data messages, ignore this\n"</span>);   </span><br><span class="line">		<span class="keyword">return</span>;       </span><br><span class="line">	&#125; </span><br><span class="line">	<span class="comment">//授权指令，value有效，data无效</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (ser_msg.type == TYPE_SERVER_CTL)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"subscribe Message: authorization or not\n"</span>);</span><br><span class="line">        respond_msg.type = TYPE_CLIENT_CTL_RESPONED;</span><br><span class="line">        <span class="comment">//respond_msg.hex_no = 0x100;</span></span><br><span class="line">        respond_msg.hex_no = ser_msg.hex_no;</span><br><span class="line">        respond_msg.value = <span class="number">0</span>; <span class="comment">//1: process successful, 0:process failed.</span></span><br><span class="line">        <span class="keyword">if</span> (uart_ctl_trans(uart_fd, ser_msg.value) &gt;= <span class="number">0</span>)</span><br><span class="line">        &#123;                                                                                                       respond_msg.value = <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        pub_uart_msg(&amp;client, &amp;respond_msg);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//暂停与继续指令</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(ser_msg.type == TYPE_SERVER_START_OR_PAUSE)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"subscribe Message: start or pause!\n"</span>);</span><br><span class="line">        cmd[<span class="number">0</span>] = <span class="number">0x07</span>;</span><br><span class="line">        cmd[<span class="number">1</span>] = ser_msg.value;</span><br><span class="line">        status = uart_data_trans(uart_fd, cmd, parm);</span><br><span class="line">        <span class="keyword">if</span> (status &lt; <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            IOT_LOG(<span class="string">"Third-party directives send error: please check!\n"</span>);</span><br><span class="line">            <span class="keyword">return</span> ;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//第三方指令</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(ser_msg.type == TYPE_SERVER_OPERATE)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"Operate Message: ser_msg.value = %d,ser_msg.hex_no = %d,ser_msg.data = %d\n"</span>,</span><br><span class="line">                                            ser_msg.value,ser_msg.hex_no,ser_msg.data);</span><br><span class="line">        <span class="comment">//模块到单片机的指令值比服务器到模块的指令少1</span></span><br><span class="line">        <span class="comment">//第三方指令2,3,4,5,6,7对应于C-&gt;U:1,2,3,4,5,6</span></span><br><span class="line">        <span class="comment">//ZERO_GRAVITY                  = 2,    //零重力</span></span><br><span class="line">        <span class="comment">//ELEVATING_REGULATION          = 3,    //升降调节</span></span><br><span class="line">        <span class="comment">//BAROMETRIC_GEAR_REGULATION    = 4,    //气压档位调节</span></span><br><span class="line">        <span class="comment">//BACK_MASSAGE_STRENRTH         = 5,    //背部按摩调节</span></span><br><span class="line">        <span class="comment">//REMOTE_VOLUME_CONTROL         = 6,    //音量调节</span></span><br><span class="line">        <span class="comment">//MASSAGE_TECHNIQUE             = 7,    //按摩手法</span></span><br><span class="line">        <span class="keyword">if</span>(ser_msg.value == ZERO_GRAVITY || ser_msg.value == ELEVATING_REGULATION || ser_msg.value == BAROMETRIC_GEAR_REGULATION</span><br><span class="line">                        || ser_msg.value == BACK_MASSAGE_STRENRTH || ser_msg.value == REMOTE_VOLUME_CONTROL || ser_msg.value == MASSAGE_TECHNIQUE)</span><br><span class="line">        &#123;</span><br><span class="line">            cmd[<span class="number">0</span>] = ser_msg.value - <span class="number">1</span>;</span><br><span class="line">            cmd[<span class="number">1</span>] = ser_msg.data;</span><br><span class="line">            status = uart_data_trans(uart_fd, cmd, parm);</span><br><span class="line">            <span class="keyword">if</span> (status &lt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                IOT_LOG(<span class="string">"Third-party directives send error: please check!\n"</span>);</span><br><span class="line">                <span class="keyword">return</span> ;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;                              </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="uart-data-trans函数"><a href="#uart-data-trans函数" class="headerlink" title="uart_data_trans函数"></a>uart_data_trans函数</h2><blockquote>
+<p>这里面涉及的就是将服务器发送过来的数据重新封装从串口发送给下位单片机！<br>uart_data_trans()函数: 将数据包发送到单片机</p>
 </blockquote>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/************************</span></span><br><span class="line"><span class="comment">send to uart len is 24Bytes. = 1+ 22 + 1</span></span><br><span class="line"><span class="comment">but parse format like: 0x7E(1)+CMD|ACK(1)+PARM(10)+0x5A(1) = 13Bytes</span></span><br><span class="line"><span class="comment">**************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">uart_data_trans</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">char</span> *cmd, <span class="keyword">char</span>* out)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> command = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> ack = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> buf[UART_DATA_SIZE] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    buf[<span class="number">0</span>] = <span class="number">0x7E</span>; <span class="comment">//SOI</span></span><br><span class="line">    buf[UART_DATA_SIZE<span class="number">-1</span>] = <span class="number">0x5A</span>; <span class="comment">//EOI</span></span><br><span class="line">                                                                                                       <span class="keyword">if</span> (fd &lt; <span class="number">0</span> || !cmd)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>; </span><br><span class="line">    command = cmd[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//memcpy(buf+1, cmd, UART_DATA_SIZE-2);//CMD(1Byte) + PARM(10Bytes)</span></span><br><span class="line">    <span class="keyword">for</span> (i =<span class="number">0</span>; i &lt; (UART_DATA_SIZE<span class="number">-2</span>)/<span class="number">2</span>; i++)</span><br><span class="line">    &#123;   </span><br><span class="line">        buf[<span class="number">1</span>+i*<span class="number">2</span>] = cmd[i] &gt;&gt; <span class="number">4</span>;</span><br><span class="line">        buf[<span class="number">1</span>+i*<span class="number">2</span>+<span class="number">1</span>] = cmd[i]&amp;<span class="number">0xf</span>;</span><br><span class="line">    &#125;   </span><br><span class="line"></span><br><span class="line">    ret = uart_send(fd, buf, UART_DATA_SIZE);</span><br><span class="line">    <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;   </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%s(): uart_send() failed\n"</span> ,__FUNCTION__);</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;   </span><br><span class="line">    <span class="built_in">memset</span>(buf, <span class="number">0</span> , UART_DATA_SIZE);</span><br><span class="line">    ret = uart_recv(fd, buf, UART_DATA_SIZE);                                                           <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;   </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%s(): uart_recv() failed\n"</span>,__FUNCTION__);</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;   </span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (buf[<span class="number">0</span>] != <span class="number">0x7E</span> || buf[UART_DATA_SIZE<span class="number">-1</span>] != <span class="number">0x5A</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"uart data recv format error: first bytes=0x%02x, end byte=[0x%02x]"</span>, buf[<span class="number">0</span>],buf[UART_DATA_SIZE<span class="number">-1</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">   	ack = (buf[<span class="number">1</span>]&lt;&lt;<span class="number">4</span>) | (buf[<span class="number">2</span>]&amp;<span class="number">0xf</span>);                                                                                                                                                                      <span class="keyword">if</span> ((ack &amp; ACK_CMD_MASK) != command)</span><br><span class="line">   	 &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"uart data ack format error: command =0x%02x, ack cmd =[0x%02x]"</span>, command, (ack &amp; ACK_CMD_MASK));</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> ((ack&gt;&gt;<span class="number">6</span>) != ACK_AMY_SUCCESS)</span><br><span class="line">     &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"uart data ack error: [%d(1:cmd err, 2:parm err, 3:other err)]"</span>, (ack&gt;&gt;<span class="number">6</span>));</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     ret = <span class="number">0</span>;</span><br><span class="line">     <span class="keyword">for</span> (i =<span class="number">0</span>; i &lt; AMY_PARM_LEN; i++)</span><br><span class="line">     &#123;</span><br><span class="line">         out[i] = (buf[<span class="number">3</span>+i*<span class="number">2</span>] &lt;&lt; <span class="number">4</span>) | (buf[<span class="number">3</span>+i*<span class="number">2</span>+<span class="number">1</span>]&amp;<span class="number">0xf</span>);</span><br><span class="line">         <span class="keyword">if</span> (debug)</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"(%02x%02x)[%02x] "</span>,buf[<span class="number">3</span>+i*<span class="number">2</span>], buf[<span class="number">3</span>+i*<span class="number">2</span>+<span class="number">1</span>], out[i]);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span> (debug)</span><br><span class="line">     &#123;</span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">"\n#########parse parms 20Bytes to 10Byte\n"</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     IOT_LOG(<span class="string">"%s(): successful, ret=[%d]\n"</span> ,__FUNCTION__, ret);</span><br><span class="line">     <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/************************</span></span><br><span class="line"><span class="comment">send to uart len is 24Bytes. = 1+ 22 + 1</span></span><br><span class="line"><span class="comment">but parse format like: 0x7E(1)+CMD|ACK(1)+PARM(10)+0x5A(1) = 13Bytes</span></span><br><span class="line"><span class="comment">**************************/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">uart_data_trans</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">char</span> *cmd, <span class="keyword">char</span>* out)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> command = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> ack = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">char</span> buf[UART_DATA_SIZE] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">    buf[<span class="number">0</span>] = <span class="number">0x7E</span>; <span class="comment">//SOI</span></span><br><span class="line">    buf[UART_DATA_SIZE<span class="number">-1</span>] = <span class="number">0x5A</span>; <span class="comment">//EOI</span></span><br><span class="line">	<span class="keyword">if</span> (fd &lt; <span class="number">0</span> || !cmd)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>; </span><br><span class="line">    command = cmd[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//memcpy(buf+1, cmd, UART_DATA_SIZE-2);//CMD(1Byte) + PARM(10Bytes)</span></span><br><span class="line">    <span class="keyword">for</span> (i =<span class="number">0</span>; i &lt; (UART_DATA_SIZE<span class="number">-2</span>)/<span class="number">2</span>; i++)</span><br><span class="line">    &#123;   </span><br><span class="line">        buf[<span class="number">1</span>+i*<span class="number">2</span>] = cmd[i] &gt;&gt; <span class="number">4</span>;</span><br><span class="line">        buf[<span class="number">1</span>+i*<span class="number">2</span>+<span class="number">1</span>] = cmd[i]&amp;<span class="number">0xf</span>;</span><br><span class="line">    &#125;   </span><br><span class="line"></span><br><span class="line">    ret = uart_send(fd, buf, UART_DATA_SIZE);</span><br><span class="line">    <span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;   </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%s(): uart_send() failed\n"</span> ,__FUNCTION__);</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;   </span><br><span class="line">    <span class="built_in">memset</span>(buf, <span class="number">0</span> , UART_DATA_SIZE);</span><br><span class="line">    ret = uart_recv(fd, buf, UART_DATA_SIZE);        </span><br><span class="line">	<span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;   </span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%s(): uart_recv() failed\n"</span>,__FUNCTION__);</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;   </span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (buf[<span class="number">0</span>] != <span class="number">0x7E</span> || buf[UART_DATA_SIZE<span class="number">-1</span>] != <span class="number">0x5A</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"uart data recv format error: first bytes=0x%02x, end byte=[0x%02x]"</span>, buf[<span class="number">0</span>],buf[UART_DATA_SIZE<span class="number">-1</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">   	ack = (buf[<span class="number">1</span>]&lt;&lt;<span class="number">4</span>) | (buf[<span class="number">2</span>]&amp;<span class="number">0xf</span>);                                                                                                                                                                      <span class="keyword">if</span> ((ack &amp; ACK_CMD_MASK) != command)</span><br><span class="line">   	 &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"uart data ack format error: command =0x%02x, ack cmd =[0x%02x]"</span>, command, (ack &amp; ACK_CMD_MASK));</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span> ((ack&gt;&gt;<span class="number">6</span>) != ACK_AMY_SUCCESS)</span><br><span class="line">     &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"uart data ack error: [%d(1:cmd err, 2:parm err, 3:other err)]"</span>, (ack&gt;&gt;<span class="number">6</span>));</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     ret = <span class="number">0</span>;</span><br><span class="line">     <span class="keyword">for</span> (i =<span class="number">0</span>; i &lt; AMY_PARM_LEN; i++)</span><br><span class="line">     &#123;</span><br><span class="line">         out[i] = (buf[<span class="number">3</span>+i*<span class="number">2</span>] &lt;&lt; <span class="number">4</span>) | (buf[<span class="number">3</span>+i*<span class="number">2</span>+<span class="number">1</span>]&amp;<span class="number">0xf</span>);</span><br><span class="line">         <span class="keyword">if</span> (debug)</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"(%02x%02x)[%02x] "</span>,buf[<span class="number">3</span>+i*<span class="number">2</span>], buf[<span class="number">3</span>+i*<span class="number">2</span>+<span class="number">1</span>], out[i]);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span> (debug)</span><br><span class="line">     &#123;</span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">"\n#########parse parms 20Bytes to 10Byte\n"</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     IOT_LOG(<span class="string">"%s(): successful, ret=[%d]\n"</span> ,__FUNCTION__, ret);</span><br><span class="line">     <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>这上面的函数就是发送数据包到单片机</p>
 </blockquote>
-<blockquote>
+<h2 id="parse-server-message函数"><a href="#parse-server-message函数" class="headerlink" title="parse_server_message函数"></a>parse_server_message函数</h2><blockquote>
 <p>parse_server_message()函数：解析服务器发送过来的原始数据填充到struct uart_msg结构体</p>
 </blockquote>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">parse_server_message</span><span class="params">(<span class="keyword">char</span>* msg_buf, struct uart_msg *msg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!msg_buf || !msg)</span><br><span class="line">        <span class="keyword">return</span> FALSE_IOT;                                                                                <span class="comment">//"&#123;\"type\":1, \"no\":10, \"value\":\"0\", \"data\":10,  \"code\":null&#125;"</span></span><br><span class="line">    <span class="keyword">char</span> *p = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">char</span> *dilem = <span class="string">","</span>;  </span><br><span class="line">    <span class="keyword">char</span> *remain = <span class="literal">NULL</span>;  </span><br><span class="line">    <span class="keyword">char</span> *src = msg_buf;</span><br><span class="line">    <span class="keyword">char</span> *tmp = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">char</span> *p2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>; </span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">NULL</span> != ( p = strtok_r(src, dilem, &amp;remain) ))   </span><br><span class="line">    &#123;    </span><br><span class="line">        <span class="comment">//printf("p[%s],remain[%s]\n",p, remain);</span></span><br><span class="line">        src = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">if</span> ((tmp = <span class="built_in">strchr</span>(p, <span class="string">':'</span>)) != <span class="literal">NULL</span>)</span><br><span class="line">        &#123;    </span><br><span class="line">            i++; </span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">strstr</span>(p, <span class="string">"type"</span>))</span><br><span class="line">            &#123;    </span><br><span class="line">                msg-&gt;type = atoi(tmp+<span class="number">1</span>);</span><br><span class="line">            &#125;    </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strstr</span>(p, <span class="string">"no"</span>))</span><br><span class="line">            &#123;    </span><br><span class="line">                msg-&gt;hex_no = strtol(tmp+<span class="number">1</span>, <span class="literal">NULL</span>, <span class="number">16</span>);<span class="comment">//hex type</span></span><br><span class="line">            &#125;    </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strstr</span>(p, <span class="string">"value"</span>))</span><br><span class="line">            &#123;    </span><br><span class="line">                <span class="keyword">if</span> ((p2 = <span class="built_in">strchr</span>(tmp+<span class="number">1</span>, <span class="string">'\"'</span>)) != <span class="literal">NULL</span> || (p2 = <span class="built_in">strchr</span>(tmp+<span class="number">1</span>, <span class="string">'\''</span>)) != <span class="literal">NULL</span>)</span><br><span class="line">                &#123;<span class="comment">//value parsed type string.</span></span><br><span class="line">                    msg-&gt;value = atoi(p2+<span class="number">1</span>);</span><br><span class="line">                &#125;    </span><br><span class="line">                <span class="keyword">else</span> </span><br><span class="line">                &#123;<span class="comment">//value parsed type int.</span></span><br><span class="line">                    msg-&gt;value = atoi(tmp+<span class="number">1</span>);</span><br><span class="line">                &#125;    </span><br><span class="line">            &#125;    </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(<span class="built_in">strstr</span>(p, <span class="string">"data"</span>)) </span><br><span class="line">            &#123;    </span><br><span class="line">                msg-&gt;data = atoi(tmp+<span class="number">1</span>); </span><br><span class="line">            &#125; </span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">            &#123; </span><br><span class="line">                <span class="comment">//invalid json key </span></span><br><span class="line">                i--; </span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (i &lt; <span class="number">3</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%s(): Error:lose parameter, i=[%d] less than 3!\n"</span>, __FUNCTION__, i);</span><br><span class="line">        <span class="keyword">return</span> FALSE_IOT;</span><br><span class="line">    &#125;</span><br><span class="line">    IOT_LOG(<span class="string">"%s(): parse end:type=[%d], no=[%x], value:[\"%d\"], data:[%x]\n"</span>, __FUNCTION__, msg-&gt;type, msg-&gt;hex_no, msg-&gt;value, msg-&gt;data);</span><br><span class="line">    <span class="keyword">return</span> TRUE_IOT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">parse_server_message</span><span class="params">(<span class="keyword">char</span>* msg_buf, struct uart_msg *msg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!msg_buf || !msg)</span><br><span class="line">        <span class="keyword">return</span> FALSE_IOT; </span><br><span class="line">	<span class="comment">//"&#123;\"type\":1, \"no\":10, \"value\":\"0\", \"data\":10,  \"code\":null&#125;"</span></span><br><span class="line">    <span class="keyword">char</span> *p = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">char</span> *dilem = <span class="string">","</span>;  </span><br><span class="line">    <span class="keyword">char</span> *remain = <span class="literal">NULL</span>;  </span><br><span class="line">    <span class="keyword">char</span> *src = msg_buf;</span><br><span class="line">    <span class="keyword">char</span> *tmp = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">char</span> *p2 = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">int</span> i = <span class="number">0</span>; </span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">NULL</span> != ( p = strtok_r(src, dilem, &amp;remain) ))   </span><br><span class="line">    &#123;    </span><br><span class="line">        <span class="comment">//printf("p[%s],remain[%s]\n",p, remain);</span></span><br><span class="line">        src = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">if</span> ((tmp = <span class="built_in">strchr</span>(p, <span class="string">':'</span>)) != <span class="literal">NULL</span>)</span><br><span class="line">        &#123;    </span><br><span class="line">            i++; </span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">strstr</span>(p, <span class="string">"type"</span>))</span><br><span class="line">            &#123;    </span><br><span class="line">                msg-&gt;type = atoi(tmp+<span class="number">1</span>);</span><br><span class="line">            &#125;    </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strstr</span>(p, <span class="string">"no"</span>))</span><br><span class="line">            &#123;    </span><br><span class="line">                msg-&gt;hex_no = strtol(tmp+<span class="number">1</span>, <span class="literal">NULL</span>, <span class="number">16</span>);<span class="comment">//hex type</span></span><br><span class="line">            &#125;    </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strstr</span>(p, <span class="string">"value"</span>))</span><br><span class="line">            &#123;    </span><br><span class="line">                <span class="keyword">if</span> ((p2 = <span class="built_in">strchr</span>(tmp+<span class="number">1</span>, <span class="string">'\"'</span>)) != <span class="literal">NULL</span> || (p2 = <span class="built_in">strchr</span>(tmp+<span class="number">1</span>, <span class="string">'\''</span>)) != <span class="literal">NULL</span>)</span><br><span class="line">                &#123;<span class="comment">//value parsed type string.</span></span><br><span class="line">                    msg-&gt;value = atoi(p2+<span class="number">1</span>);</span><br><span class="line">                &#125;    </span><br><span class="line">                <span class="keyword">else</span> </span><br><span class="line">                &#123;<span class="comment">//value parsed type int.</span></span><br><span class="line">                    msg-&gt;value = atoi(tmp+<span class="number">1</span>);</span><br><span class="line">                &#125;    </span><br><span class="line">            &#125;    </span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(<span class="built_in">strstr</span>(p, <span class="string">"data"</span>)) </span><br><span class="line">            &#123;    </span><br><span class="line">                msg-&gt;data = atoi(tmp+<span class="number">1</span>); </span><br><span class="line">            &#125; </span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">            &#123; </span><br><span class="line">                <span class="comment">//invalid json key </span></span><br><span class="line">                i--; </span><br><span class="line">            &#125; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (i &lt; <span class="number">3</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%s(): Error:lose parameter, i=[%d] less than 3!\n"</span>, __FUNCTION__, i);</span><br><span class="line">        <span class="keyword">return</span> FALSE_IOT;</span><br><span class="line">    &#125;</span><br><span class="line">    IOT_LOG(<span class="string">"%s(): parse end:type=[%d], no=[%x], value:[\"%d\"], data:[%x]\n"</span>, __FUNCTION__, msg-&gt;type, msg-&gt;hex_no, msg-&gt;value, msg-&gt;data);</span><br><span class="line">    <span class="keyword">return</span> TRUE_IOT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>原始数据是 type:1, no:10, value:0, data:10,  code:null</p>
 <p>所以以“，”作为分隔，“：”再次分隔可得到相应的数据</p>
@@ -796,7 +841,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
     
-    <a href="http://iliuqi.com/2019/05/14/按摩椅项目/" title="按摩椅项目">http://iliuqi.com/2019/05/14/按摩椅项目/</a>
+    <a href="http://www.iliuqi.com/2019/05/14/按摩椅项目/" title="按摩椅项目">http://www.iliuqi.com/2019/05/14/按摩椅项目/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
@@ -910,7 +955,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -939,7 +984,9 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
                     
                       
                     
-                    <span class="site-state-item-count">6</span>
+                      
+                    
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -974,7 +1021,27 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -1024,13 +1091,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
               
             </div>
           
-		  
 	
-		<div>
-			 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="280" height="86" src="//music.163.com/outchain/player?type=2&id=461855254&auto=1&height=66"></iframe>  
-		</div>
-	
-
           
 
           
@@ -1055,7 +1116,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#原理"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件接口"><span class="nav-number">1.1.</span> <span class="nav-text">硬件接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据通信格式"><span class="nav-number">1.2.</span> <span class="nav-text">数据通信格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单片机-gt-4G模块"><span class="nav-number">1.2.1.</span> <span class="nav-text">单片机-&gt;4G模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#指令概括"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">指令概括</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体通信协议"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">具体通信协议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4G模块-gt-服务器"><span class="nav-number">1.2.2.</span> <span class="nav-text">4G模块-&gt;服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#指令概括-1"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">指令概括</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体通信协议-1"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">具体通信协议</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码简述"><span class="nav-number">2.</span> <span class="nav-text">代码简述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#原理"><span class="nav-number">1.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件接口"><span class="nav-number">1.1.</span> <span class="nav-text">硬件接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据通信格式"><span class="nav-number">1.2.</span> <span class="nav-text">数据通信格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#单片机-gt-4G模块"><span class="nav-number">1.2.1.</span> <span class="nav-text">单片机-&gt;4G模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#指令概括"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">指令概括</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体通信协议"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">具体通信协议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4G模块-gt-服务器"><span class="nav-number">1.2.2.</span> <span class="nav-text">4G模块-&gt;服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#指令概括-1"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">指令概括</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#具体通信协议-1"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">具体通信协议</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#代码简述"><span class="nav-number">2.</span> <span class="nav-text">代码简述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#messageArrived函数"><span class="nav-number">2.1.</span> <span class="nav-text">messageArrived函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#uart-data-trans函数"><span class="nav-number">2.2.</span> <span class="nav-text">uart_data_trans函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#parse-server-message函数"><span class="nav-number">2.3.</span> <span class="nav-text">parse_server_message函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
@@ -1147,7 +1208,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
 
     
   </div>
-
+  <script type="text/javascript" src="/js/src/clicklove.js"></script>
   
 
 <script>
@@ -1162,6 +1223,8 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
 
 
 
+  
+
 
 
 
@@ -1170,6 +1233,12 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
   
 
 
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="1" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
 
 
 
@@ -1185,6 +1254,9 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
 
   
   <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery-lazyload@1/jquery.lazyload.min.js"></script>
 
   
   <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
@@ -1256,6 +1328,326 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
 
 
   
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
 
 
 
@@ -1271,6 +1663,16 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
   
 
   
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
 
   
 

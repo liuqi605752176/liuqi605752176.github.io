@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="u19RspDkePP12bSK4FPseLSC7wt1LBru96c1yChX3Po">
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.6/jquery.fancybox.min.css">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"always","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: false,
+    lazyload: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="硬件连接图 GPIO配置表   GPIO FUNCTION     GPIO_0 SPI_MOSI   GPIO_1 SPI_MISO   GPIO_2 SPI_CS_N   GPIO_3 SPI_CLK   GPIO_71 OLED_A0   GPIO_93 OLED_PWR_CTL    设备树配置 代码位置： kernel/arch/arm/boot/dts/qcom/mdm9640.dts">
+<meta name="keywords" content="linux device driver,spi,oled">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spi接口的oled显示驱动">
+<meta property="og:url" content="http://www.iliuqi.com/2019/05/24/spi接口的oled显示驱动/index.html">
+<meta property="og:site_name" content="那些年的旧时光">
+<meta property="og:description" content="硬件连接图 GPIO配置表   GPIO FUNCTION     GPIO_0 SPI_MOSI   GPIO_1 SPI_MISO   GPIO_2 SPI_CS_N   GPIO_3 SPI_CLK   GPIO_71 OLED_A0   GPIO_93 OLED_PWR_CTL    设备树配置 代码位置： kernel/arch/arm/boot/dts/qcom/mdm9640.dts">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.iliuqi.com/2019/05/24/spi接口的oled显示驱动/sh1106原理图.png">
+<meta property="og:updated_time" content="2019-05-24T06:11:02.131Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="spi接口的oled显示驱动">
+<meta name="twitter:description" content="硬件连接图 GPIO配置表   GPIO FUNCTION     GPIO_0 SPI_MOSI   GPIO_1 SPI_MISO   GPIO_2 SPI_CS_N   GPIO_3 SPI_CLK   GPIO_71 OLED_A0   GPIO_93 OLED_PWR_CTL    设备树配置 代码位置： kernel/arch/arm/boot/dts/qcom/mdm9640.dts">
+<meta name="twitter:image" content="http://www.iliuqi.com/2019/05/24/spi接口的oled显示驱动/sh1106原理图.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://www.iliuqi.com/2019/05/24/spi接口的oled显示驱动/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>spi接口的oled显示驱动 | 那些年的旧时光</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/liuqi605752176" class="github-corner" aria-label="View source on
+	GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; top: 0; border: 0;
+		right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142
+		L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6
+		119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3
+		123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9
+		134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5
+		119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0
+		127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4
+		163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6
+		187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2
+		216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4
+		203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1
+		C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7
+		141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover
+.octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes
+octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media
+(max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner
+	.octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">那些年的旧时光</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-photos">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/photos" rel="section"><i class="menu-item-icon fa fa-fw fa-camera"></i> <br>相册</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-playlist">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/playlist" rel="section"><i class="menu-item-icon fa fa-fw fa-music"></i> <br>音乐</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.iliuqi.com/2019/05/24/spi接口的oled显示驱动/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="liuqi">
+      <meta itemprop="description" content="男儿何不带吴钩，收取关山五十州">
+      <meta itemprop="image" content="/images/personal.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="那些年的旧时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">spi接口的oled显示驱动
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-24 03:23:53" itemprop="dateCreated datePublished" datetime="2019-05-24T03:23:53+00:00">2019-05-24</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/linux-device-driver/" itemprop="url" rel="index"><span itemprop="name">linux device driver</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="硬件连接图"><a href="#硬件连接图" class="headerlink" title="硬件连接图"></a>硬件连接图</h1><p><img src="sh1106原理图.png" alt="sh1106原理图"></p>
+<h1 id="GPIO配置表"><a href="#GPIO配置表" class="headerlink" title="GPIO配置表"></a>GPIO配置表</h1><table>
+<thead>
+<tr>
+<th style="text-align:center">GPIO</th>
+<th style="text-align:center">FUNCTION</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">GPIO_0</td>
+<td style="text-align:center">SPI_MOSI</td>
+</tr>
+<tr>
+<td style="text-align:center">GPIO_1</td>
+<td style="text-align:center">SPI_MISO</td>
+</tr>
+<tr>
+<td style="text-align:center">GPIO_2</td>
+<td style="text-align:center">SPI_CS_N</td>
+</tr>
+<tr>
+<td style="text-align:center">GPIO_3</td>
+<td style="text-align:center">SPI_CLK</td>
+</tr>
+<tr>
+<td style="text-align:center">GPIO_71</td>
+<td style="text-align:center">OLED_A0</td>
+</tr>
+<tr>
+<td style="text-align:center">GPIO_93</td>
+<td style="text-align:center">OLED_PWR_CTL</td>
+</tr>
+</tbody>
+</table>
+<h1 id="设备树配置"><a href="#设备树配置" class="headerlink" title="设备树配置"></a>设备树配置</h1><blockquote>
+<p>代码位置： kernel/arch/arm/boot/dts/qcom/mdm9640.dtsi</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"> spi_0: spi@78b5000 &#123; /* BLSP1 QUP1 */</span><br><span class="line">     compatible = &quot;qcom,spi-qup-v2&quot;;</span><br><span class="line">     #address-cells = &lt;1&gt;; </span><br><span class="line">     #size-cells = &lt;0&gt;; </span><br><span class="line">     reg-names = &quot;spi_physical&quot;, &quot;spi_bam_physical&quot;;</span><br><span class="line">     reg = &lt;0x78b5000 0x600&gt;,</span><br><span class="line">           &lt;0x7884000 0x23000&gt;;</span><br><span class="line">     interrupt-names = &quot;spi_irq&quot;, &quot;spi_bam_irq&quot;;</span><br><span class="line">     interrupts = &lt;0 95 0&gt;, &lt;0 238 0&gt;;</span><br><span class="line">     spi-max-frequency = &lt;19200000&gt;;</span><br><span class="line">     pinctrl-names = &quot;spi_default&quot;, &quot;spi_sleep&quot;;</span><br><span class="line">     pinctrl-0 = &lt;&amp;spi0_default &amp;spi0_cs0_active&gt;;</span><br><span class="line">     pinctrl-1 = &lt;&amp;spi0_sleep &amp;spi0_cs0_sleep&gt;;</span><br><span class="line">     clocks = &lt;&amp;clock_gcc clk_gcc_blsp1_ahb_clk&gt;,</span><br><span class="line">          &lt;&amp;clock_gcc clk_gcc_blsp1_qup1_spi_apps_clk&gt;;</span><br><span class="line">     clock-names = &quot;iface_clk&quot;, &quot;core_clk&quot;;</span><br><span class="line">     qcom,infinite-mode = &lt;0&gt;; </span><br><span class="line">     qcom,use-pinctrl;</span><br><span class="line">     qcom,ver-reg-exists;</span><br><span class="line">     qcom,master-id = &lt;86&gt;;</span><br><span class="line">     status = &quot;ok&quot;;</span><br><span class="line">     qcom-spi-lcd@0 &#123;</span><br><span class="line">         compatible = &quot;qcom,spi-oled&quot;;</span><br><span class="line">         reg = &lt;0&gt;;                                                                                         </span><br><span class="line">spi-max-frequency = &lt;10000000&gt;;</span><br><span class="line">        	pinctrl-names = &quot;active&quot;, &quot;sleep&quot;;</span><br><span class="line">         pinctrl-0 = &lt;&amp;oled_rst_active&gt;;</span><br><span class="line">         pinctrl-1 = &lt;&amp;oled_rst_sleep&gt;;</span><br><span class="line">         interrupt-parent = &lt;&amp;tlmm_pinmux&gt;;</span><br><span class="line">         interrupts = &lt;0 0&gt;;</span><br><span class="line">         qcom_spi_oled,irq-gpio = &lt;&amp;tlmm_pinmux 94 0x00&gt;; </span><br><span class="line">     &#125;;   </span><br><span class="line"> &#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="驱动流程"><a href="#驱动流程" class="headerlink" title="驱动流程"></a>驱动流程</h1><h2 id="驱动与设备匹配"><a href="#驱动与设备匹配" class="headerlink" title="驱动与设备匹配"></a>驱动与设备匹配</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//SPI Driver Info                                                                                   </span></span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">spi_driver</span> <span class="title">spi_oled_driver</span> = &#123;</span>                                                           </span><br><span class="line">	.driver = &#123;                                                                                             </span><br><span class="line">		.name = <span class="string">"qcom,spi-oled"</span>,                                                                           </span><br><span class="line">		.owner = THIS_MODULE,       </span><br><span class="line">		.of_match_table = qcom_spi_oled_table,     </span><br><span class="line">	&#125;,             </span><br><span class="line">	.probe = spi_oled_probe,      </span><br><span class="line">&#125;;          </span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> __<span class="function">init <span class="title">spi_oled_init</span><span class="params">(<span class="keyword">void</span>)</span>  </span></span><br><span class="line"><span class="function"></span>&#123;                  </span><br><span class="line">	<span class="keyword">return</span> spi_register_driver(&amp;spi_oled_driver);   </span><br><span class="line">&#125;        </span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span> __<span class="function"><span class="built_in">exit</span> <span class="title">spi_oled_exit</span><span class="params">(<span class="keyword">void</span>)</span>       </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    spi_unregister_driver(&amp;spi_oled_driver);         </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="probe函数"><a href="#probe函数" class="headerlink" title="probe函数"></a>probe函数</h2><blockquote>
+<p>probe函数中主要功能就是解析设备树，cs、irq、cpha、cpol等状态，以及对oled的硬件初始化、</p>
+<p>注册framebuffer结构体，设置fb_info的var和fix参数</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">spi_oled_probe</span><span class="params">(struct spi_device *spi)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> irq_gpio = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">int</span> irq;</span><br><span class="line">    <span class="keyword">int</span> cs;</span><br><span class="line">    <span class="keyword">int</span> cpha,cpol,cs_high;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span>  max_speed;</span><br><span class="line">    <span class="keyword">int</span> i,ret;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">page</span> *<span class="title">buffer_page</span>;</span></span><br><span class="line">    <span class="keyword">int</span> page_order;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">fb_info</span> * <span class="title">fbinfo</span>;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/*----------------- resource init ---------------------------*/</span></span><br><span class="line">    printk(<span class="string">"start spi_oled_probe!\r\n"</span>);</span><br><span class="line"></span><br><span class="line">    oled.dev = &amp;spi-&gt;dev;</span><br><span class="line">	page_order = ffz(~(OLED_BUFFER_SIZE/PAGE_SIZE)) + <span class="number">1</span>;</span><br><span class="line">	fb_buf = (<span class="keyword">uint8_t</span> *)__get_free_pages(GFP_KERNEL, page_order);</span><br><span class="line">	<span class="keyword">for</span>( i = <span class="number">0</span>;i &lt; (OLED_BUFFER_SIZE/PAGE_SIZE) ; i += PAGE_SIZE)</span><br><span class="line">    &#123;</span><br><span class="line">        buffer_page = virt_to_page(fb_buf+i);</span><br><span class="line">        SetPageReserved(buffer_page);</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">/** spi work mode **/</span></span><br><span class="line">    <span class="keyword">if</span>(spi-&gt;dev.of_node)&#123;</span><br><span class="line">        irq_gpio = of_get_named_gpio_flags(spi-&gt;dev.of_node,</span><br><span class="line">        <span class="string">"qcom_spi_oled,irq-gpio"</span>, <span class="number">0</span>, <span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">	irq = spi-&gt;irq;</span><br><span class="line">    cs = spi-&gt;chip_select;</span><br><span class="line">    cpha = ( spi-&gt;mode &amp; SPI_CPHA ) ? <span class="number">1</span>:<span class="number">0</span>;</span><br><span class="line">    cpol = ( spi-&gt;mode &amp; SPI_CPOL ) ? <span class="number">1</span>:<span class="number">0</span>;</span><br><span class="line">    cs_high = ( spi-&gt;mode &amp; SPI_CS_HIGH ) ? <span class="number">1</span>:<span class="number">0</span>;</span><br><span class="line">    max_speed = spi-&gt;max_speed_hz;</span><br><span class="line">    printk(<span class="string">"gpio [%d] irq [%d] gpio_irq [%d] cs [%x] CPHA[%x] CPOL [%x] CS_HIGH [%x]\n"</span>,          </span><br><span class="line">			irq_gpio, irq, gpio_to_irq(irq_gpio), cs, cpha, cpol,cs_high);</span><br><span class="line">	printk(<span class="string">"Max_speed [%d]\n"</span>, max_speed );</span><br><span class="line">	<span class="comment">//Transfer can be done after spi_device structure is created</span></span><br><span class="line">    spi-&gt;bits_per_word = <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** pin control register remap **/</span></span><br><span class="line">	oled.virt_base = devm_ioremap_nocache(&amp;spi-&gt;dev,TLMM_BASE_ADDR,<span class="number">100</span> * <span class="number">0x1000</span>);</span><br><span class="line">	<span class="keyword">if</span>( oled.virt_base == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        printk(<span class="string">"%s ioremap error !\n"</span>,__func__);</span><br><span class="line">        <span class="keyword">return</span> -ENOMEM;</span><br><span class="line">    &#125;</span><br><span class="line">	init_rwsem(&amp;oled.rg.lock);</span><br><span class="line">	<span class="comment">/*----------------------- pin config -----------------------------*/</span></span><br><span class="line">	oled.gpio_reset = GPIO_OLED_RESET;</span><br><span class="line">    oled.gpio_switch = GPIO_OLED_CMD_DATA;</span><br><span class="line">	oled_reset_pin_config();</span><br><span class="line">    oled_switch_pin_config();</span><br><span class="line">    <span class="comment">/*---------------------- lcd chip init ---------------------------*/</span></span><br><span class="line">    sh1106g_hw_reset();</span><br><span class="line">    sh1106g_disp_init();</span><br><span class="line">    <span class="comment">/*--------------------- data transfer test -----------------------*/</span></span><br><span class="line">    sh1106g_disp_pic(PIC01);</span><br><span class="line">    <span class="comment">/*--------------------- framebuffer register ----------------------*/</span></span><br><span class="line"></span><br><span class="line">    fbinfo = kzalloc(<span class="keyword">sizeof</span>(struct fb_info),GFP_KERNEL);</span><br><span class="line">    <span class="keyword">if</span>( fbinfo == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        printk(<span class="string">"%s fbinfo alloc error !\n"</span>,__func__);</span><br><span class="line">        <span class="keyword">return</span> -ENOMEM;</span><br><span class="line">    &#125;</span><br><span class="line">	fbinfo-&gt;fbops = &amp;oled_fb_ops;</span><br><span class="line">	fbinfo-&gt;flags = FBINFO_FLAG_DEFAULT;</span><br><span class="line">	fbinfo-&gt;fix.visual = FB_VISUAL_MONO10;</span><br><span class="line">    fbinfo-&gt;fix.type = FB_TYPE_PACKED_PIXELS;</span><br><span class="line">    fbinfo-&gt;fix.capabilities = <span class="number">0</span>;</span><br><span class="line">    fbinfo-&gt;fix.smem_start = virt_to_phys(fb_buf);</span><br><span class="line">    fbinfo-&gt;fix.smem_len = <span class="keyword">sizeof</span>(fb_buf);</span><br><span class="line">    fbinfo-&gt;fix.accel = FB_ACCEL_NONE;</span><br><span class="line"></span><br><span class="line">	fbinfo-&gt;var.width = <span class="number">128</span>;</span><br><span class="line">    fbinfo-&gt;var.height = <span class="number">64</span>;</span><br><span class="line">	fbinfo-&gt;var.xres = <span class="number">128</span>;</span><br><span class="line">    fbinfo-&gt;var.yres = <span class="number">64</span>;</span><br><span class="line">    fbinfo-&gt;var.xres_virtual= <span class="number">128</span>;</span><br><span class="line">    fbinfo-&gt;var.yres_virtual= <span class="number">64</span>;</span><br><span class="line">    <span class="comment">//fbinfo-&gt;var.left_margin = 20;</span></span><br><span class="line">    fbinfo-&gt;var.hsync_len = <span class="number">128</span>;</span><br><span class="line">    fbinfo-&gt;var.vsync_len = <span class="number">64</span>;</span><br><span class="line">	fbinfo-&gt;var.grayscale = <span class="number">1</span>;</span><br><span class="line">    fbinfo-&gt;var.bits_per_pixel = <span class="number">8</span>;</span><br><span class="line">    fbinfo-&gt;var.activate = FB_ACTIVATE_NOW;</span><br><span class="line">    fbinfo-&gt;var.pixclock = <span class="number">500000</span>;</span><br><span class="line">    <span class="comment">//fbinfo-&gt;var.rotate = FB_ROTATE_CW;</span></span><br><span class="line">	fbinfo-&gt;fix.mmio_start = virt_to_phys(fb_buf);</span><br><span class="line">    fbinfo-&gt;fix.mmio_len = <span class="keyword">sizeof</span>(fb_buf);</span><br><span class="line">    fbinfo-&gt;var.red.offset = <span class="number">0</span>;</span><br><span class="line">    fbinfo-&gt;var.red.length = fbinfo-&gt;var.bits_per_pixel;</span><br><span class="line">    fbinfo-&gt;var.green = fbinfo-&gt;var.red;</span><br><span class="line">    fbinfo-&gt;var.blue = fbinfo-&gt;var.red;</span><br><span class="line">    fbinfo-&gt;var.vmode = FB_VMODE_NONINTERLACED;</span><br><span class="line">	fbinfo-&gt;screen_base = fb_buf;</span><br><span class="line">    fbinfo-&gt;screen_size = <span class="keyword">sizeof</span>(fb_buf);</span><br><span class="line"></span><br><span class="line">    ret = register_framebuffer(fbinfo);</span><br><span class="line">	<span class="keyword">if</span>( ret )</span><br><span class="line">    &#123;</span><br><span class="line">       printk(<span class="string">"oled register framebuffer !\r\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//dev_err(&amp;spi-&gt;dev, "SPI sync returned [%d]\n",spi_oled_transfer(spi));</span></span><br><span class="line">	<span class="comment">/*--------------------- lcd refresh thread ---------------------*/</span></span><br><span class="line">	<span class="keyword">for</span>( i = <span class="number">0</span>; i &lt; <span class="number">8192</span> ;i ++ )</span><br><span class="line">    &#123;</span><br><span class="line">       fb_buf[i] = PIC01[i%<span class="number">128</span>+(i/<span class="number">1024</span>*<span class="number">128</span>)]&amp;(<span class="number">1</span>&lt;&lt;(<span class="number">7</span>-((i/<span class="number">128</span>)&amp;<span class="number">7</span>)));</span><br><span class="line">    &#125;</span><br><span class="line">    sh1106g_disp_refresh();</span><br><span class="line">	oled.disp_status = OLED_DISP_ON;;</span><br><span class="line">	kthread_run(oled_refresh,<span class="literal">NULL</span>,<span class="string">"oled"</span>);</span><br><span class="line">	printk(<span class="string">"oled write ok!\r\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="oled-reset-pin-config"><a href="#oled-reset-pin-config" class="headerlink" title="oled_reset_pin_config"></a>oled_reset_pin_config</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">oled_reset_pin_config</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> result;</span><br><span class="line">	<span class="comment">/** active state **/</span></span><br><span class="line">    oled.pinctrl = devm_pinctrl_get(oled.dev);         </span><br><span class="line">	<span class="keyword">if</span> (IS_ERR_OR_NULL(oled.pinctrl)) &#123;</span><br><span class="line">        dev_err(oled.dev, <span class="string">"Failed to get pin ctrl\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> PTR_ERR(oled.pinctrl);</span><br><span class="line">    &#125;</span><br><span class="line">    oled.pins_active = pinctrl_lookup_state(oled.pinctrl,<span class="string">"active"</span>);</span><br><span class="line">	<span class="keyword">if</span> (IS_ERR_OR_NULL(oled.pins_active)) &#123;</span><br><span class="line">        dev_err(oled.dev, <span class="string">"Failed to lookup pinctrl active state\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> PTR_ERR(oled.pins_active);</span><br><span class="line">    &#125;</span><br><span class="line">	oled.pins_sleep = pinctrl_lookup_state(oled.pinctrl,<span class="string">"sleep"</span>);</span><br><span class="line">	<span class="keyword">if</span> (IS_ERR_OR_NULL(oled.pins_sleep)) &#123;</span><br><span class="line">        dev_err(oled.dev, <span class="string">"Failed to lookup pinctrl sleep state\n"</span>);</span><br><span class="line">        <span class="keyword">return</span> PTR_ERR(oled.pins_sleep);</span><br><span class="line">    &#125;</span><br><span class="line">	result = pinctrl_select_state(oled.pinctrl, oled.pins_active);</span><br><span class="line">	<span class="keyword">if</span> (result) &#123;</span><br><span class="line">		dev_err(oled.dev, <span class="string">"%s: Can not set %s pins\n"</span>,</span><br><span class="line">        __func__, <span class="string">"active"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">/** output high,no pull,12mA  **/</span></span><br><span class="line">    gpio_tlmm_config(oled.gpio_reset,<span class="number">0</span>,GPIO_OUTPUT,GPIO_NO_PULL,GPIO_8MA);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这是利用pinctrl子系统来进行状态选择的，</p>
+</blockquote>
+<h3 id="sh1106g-hw-reset"><a href="#sh1106g-hw-reset" class="headerlink" title="sh1106g_hw_reset"></a>sh1106g_hw_reset</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*--------------------------------   lcd operation -------------------------------*/</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sh1106g_hw_reset</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/** drive high **/</span></span><br><span class="line">    oled_reset_pin_high();</span><br><span class="line">	<span class="comment">/** delay **/</span></span><br><span class="line">    udelay(<span class="number">100</span>);</span><br><span class="line">	<span class="comment">/** drive low **/</span></span><br><span class="line">    oled_reset_pin_low();</span><br><span class="line">	<span class="comment">/** delay **/</span></span><br><span class="line">    udelay(<span class="number">100</span>);</span><br><span class="line">	<span class="comment">/** drive high **/</span></span><br><span class="line">    oled_reset_pin_high();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这是一个硬件复位，先把reset脚拉低再拉高</p>
+</blockquote>
+<h3 id="sh1106g-disp-init"><a href="#sh1106g-disp-init" class="headerlink" title="sh1106g_disp_init"></a>sh1106g_disp_init</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** init oled output mode **/</span>  </span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sh1106g_disp_init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    sh1106g_write_cmd(<span class="number">0xAE</span>); <span class="comment">//Set Display Off</span></span><br><span class="line">	sh1106g_write_cmd(<span class="number">0xD5</span>); <span class="comment">//display divide ratio/osc. freq. mode</span></span><br><span class="line">    sh1106g_write_cmd(<span class="number">0x80</span>);</span><br><span class="line">	sh1106g_write_cmd(<span class="number">0xA8</span>); <span class="comment">//multiplex ration mode:63</span></span><br><span class="line">    sh1106g_write_cmd(<span class="number">0x3F</span>);</span><br><span class="line">	sh1106g_write_cmd(<span class="number">0xD3</span>); <span class="comment">//Set Display Offset</span></span><br><span class="line">    sh1106g_write_cmd(<span class="number">0x00</span>);</span><br><span class="line">	sh1106g_write_cmd(<span class="number">0x40</span>); <span class="comment">//Set Display Start Line</span></span><br><span class="line">	sh1106g_write_cmd(<span class="number">0xAD</span>); <span class="comment">//DC-DC Control Mode Set</span></span><br><span class="line">    sh1106g_write_cmd(<span class="number">0x8B</span>); <span class="comment">//DC-DC ON/OFF Mode Set 0x8A: external dc-dc 0x8b: internal dc-dc</span></span><br><span class="line">	sh1106g_write_cmd(<span class="number">0x32</span>);<span class="comment">//Set Pump voltage value</span></span><br><span class="line">	sh1106g_write_cmd(<span class="number">0xA1</span>);<span class="comment">//Segment Remap</span></span><br><span class="line">	sh1106g_write_cmd(<span class="number">0xC8</span>); <span class="comment">//Sst COM Output Scan Direction</span></span><br><span class="line">	sh1106g_write_cmd(<span class="number">0xDA</span>); <span class="comment">//common pads hardware: alternative</span></span><br><span class="line">    sh1106g_write_cmd(<span class="number">0x12</span>);</span><br><span class="line">	sh1106g_write_cmd(<span class="number">0x81</span>);<span class="comment">//contrast control</span></span><br><span class="line">    sh1106g_write_cmd(CONTRAST);</span><br><span class="line">	sh1106g_write_cmd(<span class="number">0xD9</span>);<span class="comment">//set pre-charge period</span></span><br><span class="line">    sh1106g_write_cmd(<span class="number">0x1F</span>);</span><br><span class="line">	sh1106g_write_cmd(<span class="number">0xDB</span>);<span class="comment">//VCOM deselect level mode</span></span><br><span class="line">    sh1106g_write_cmd(<span class="number">0x40</span>);</span><br><span class="line">	sh1106g_write_cmd(<span class="number">0xA4</span>);<span class="comment">//Set Entire Display On/Off</span></span><br><span class="line">    sh1106g_write_cmd(<span class="number">0xA6</span>);<span class="comment">//Set Normal Display </span></span><br><span class="line">    sh1106g_write_cmd(<span class="number">0x8D</span>);<span class="comment">//Set Charge Pump 0x8D, 0x14</span></span><br><span class="line">    sh1106g_write_cmd(<span class="number">0x14</span>);<span class="comment">//</span></span><br><span class="line">	sh1106g_write_cmd(<span class="number">0xAF</span>);<span class="comment">//Set Display On</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="fb-ops"><a href="#fb-ops" class="headerlink" title="fb_ops"></a>fb_ops</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">fb_ops</span> <span class="title">oled_fb_ops</span> =</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    .owner = THIS_MODULE,</span><br><span class="line">    .fb_open = oled_fb_open,</span><br><span class="line">    .fb_release = oled_fb_release,</span><br><span class="line">    .fb_read = oled_fb_read,</span><br><span class="line">    .fb_write = oled_fb_write,  </span><br><span class="line">	.fb_mmap = oled_fb_mmap,</span><br><span class="line">    .fb_set_par = oled_set_par,   </span><br><span class="line">    .fb_blank   = oled_blank,   </span><br><span class="line">    .fb_setcolreg = oled_setcolreg,   </span><br><span class="line">    .fb_fillrect    = oled_fillrect,   </span><br><span class="line">    .fb_copyarea    = oled_copyarea, </span><br><span class="line">    .fb_check_var  = oled_check_var,</span><br><span class="line">    .fb_imageblit   = oled_imageblit, </span><br><span class="line">    .fb_ioctl = oled_fb_ioctl,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>fb_ops 是对framebuffer的操作接口函数</p>
+</blockquote>
+<h3 id="oled-fb-mmap"><a href="#oled-fb-mmap" class="headerlink" title="oled_fb_mmap"></a>oled_fb_mmap</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* perform fb specific mmap */</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">oled_fb_mmap</span><span class="params">(struct fb_info *fbi, struct vm_area_struct *vma)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">fb_fix_screeninfo</span> *<span class="title">fix</span> = &amp;<span class="title">fbi</span>-&gt;<span class="title">fix</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">oled_mem_region</span> *<span class="title">rg</span> = &amp;<span class="title">oled</span>.<span class="title">rg</span>;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> start;</span><br><span class="line">    u32 len;</span><br><span class="line">    <span class="keyword">int</span> r;</span><br><span class="line"></span><br><span class="line">    oled_get_mem_region(rg);</span><br><span class="line">	start = fix-&gt;smem_start;</span><br><span class="line">    len = fix-&gt;smem_len;</span><br><span class="line">	<span class="keyword">if</span>( vma-&gt;vm_end - vma-&gt;vm_start &gt; OLED_BUFFER_SIZE)</span><br><span class="line">    &#123;</span><br><span class="line">        r = -EINVAL;</span><br><span class="line">        <span class="keyword">goto</span> error;</span><br><span class="line">    &#125;</span><br><span class="line">	r = remap_pfn_range(vma,vma-&gt;vm_start,</span><br><span class="line">           virt_to_phys((<span class="keyword">void</span>*)((<span class="keyword">unsigned</span> <span class="keyword">long</span>)fb_buf)) &gt;&gt; PAGE_SHIFT,  </span><br><span class="line">		   vma-&gt;vm_end-vma-&gt;vm_start,vma-&gt;vm_flags | PAGE_SHARED);</span><br><span class="line">    <span class="keyword">if</span>(r != <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">goto</span> error;</span><br><span class="line">	<span class="comment">/* vm_ops.open won't be called for mmap itself. */</span></span><br><span class="line">    atomic_inc(&amp;rg-&gt;map_count);</span><br><span class="line">	oled_put_mem_region(rg);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">error:</span><br><span class="line">    oled_put_mem_region(rg);</span><br><span class="line">	<span class="keyword">return</span> r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="oled-fb-ioctl"><a href="#oled-fb-ioctl" class="headerlink" title="oled_fb_ioctl"></a>oled_fb_ioctl</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">oled_fb_ioctl</span><span class="params">(struct fb_info *info, <span class="keyword">unsigned</span> <span class="keyword">int</span> cmd, <span class="keyword">unsigned</span> <span class="keyword">long</span> arg)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">switch</span> (cmd) &#123;</span><br><span class="line">    <span class="keyword">case</span> FBIO_IOCTL_ON:</span><br><span class="line">        oled.disp_status = OLED_DISP_ON;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> FBIO_IOCTL_OFF:</span><br><span class="line">        oled.disp_status = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        ret = -ENOTTY;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><blockquote>
+<p>提供了ioctl接口来点亮以及关闭oled,上层可以调用响应的ioctl函数。图片的显示利用framebuffer的mmap接口直接映射。避免的数据从用户空间到内核的拷贝。</p>
+</blockquote>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>liuqi</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://www.iliuqi.com/2019/05/24/spi接口的oled显示驱动/" title="spi接口的oled显示驱动">http://www.iliuqi.com/2019/05/24/spi接口的oled显示驱动/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux-device-driver/" rel="tag"><i class="fa fa-tag"></i> linux device driver</a>
+          
+            <a href="/tags/spi/" rel="tag"><i class="fa fa-tag"></i> spi</a>
+          
+            <a href="/tags/oled/" rel="tag"><i class="fa fa-tag"></i> oled</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/23/iperf工具测试指导/" rel="next" title="iperf工具测试指导">
+                <i class="fa fa-chevron-left"></i> iperf工具测试指导
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/26/时光小记/" rel="prev" title="时光小记">
+                时光小记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zOTQzMS8xNTk1OA=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/personal.gif" alt="liuqi">
+            
+              <p class="site-author-name" itemprop="name">liuqi</p>
+              <div class="site-description motion-element" itemprop="description">男儿何不带吴钩，收取关山五十州</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/liuqi605752176" title="GitHub &rarr; https://github.com/liuqi605752176" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liuqi605752176@outlook.com" title="E-Mail &rarr; mailto:liuqi605752176@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2209902513" title="Weibo &rarr; https://weibo.com/2209902513" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+            </div>
+          
+	
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#硬件连接图"><span class="nav-number">1.</span> <span class="nav-text">硬件连接图</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GPIO配置表"><span class="nav-number">2.</span> <span class="nav-text">GPIO配置表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设备树配置"><span class="nav-number">3.</span> <span class="nav-text">设备树配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#驱动流程"><span class="nav-number">4.</span> <span class="nav-text">驱动流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#驱动与设备匹配"><span class="nav-number">4.1.</span> <span class="nav-text">驱动与设备匹配</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#probe函数"><span class="nav-number">4.2.</span> <span class="nav-text">probe函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#oled-reset-pin-config"><span class="nav-number">4.2.1.</span> <span class="nav-text">oled_reset_pin_config</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sh1106g-hw-reset"><span class="nav-number">4.2.2.</span> <span class="nav-text">sh1106g_hw_reset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sh1106g-disp-init"><span class="nav-number">4.2.3.</span> <span class="nav-text">sh1106g_disp_init</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fb-ops"><span class="nav-number">4.3.</span> <span class="nav-text">fb_ops</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#oled-fb-mmap"><span class="nav-number">4.3.1.</span> <span class="nav-text">oled_fb_mmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#oled-fb-ioctl"><span class="nav-number">4.3.2.</span> <span class="nav-text">oled_fb_ioctl</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-liuqi"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liuqi</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+  <script type="text/javascript" src="/js/src/clicklove.js"></script>
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="1" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery-lazyload@1/jquery.lazyload.min.js"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.6/jquery.fancybox.min.js"></script>
+
+
+  
+
+
+
+
+  <script type="text/javascript" src="/js/utils.js?v=7.1.1"></script>
+
+  <script type="text/javascript" src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script>
+  window.livereOptions = {
+    refer: '2019/05/24/spi接口的oled显示驱动/'
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
