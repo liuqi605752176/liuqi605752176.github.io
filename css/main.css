@@ -1789,7 +1789,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #e4ffb6;
+  background: #7157e0;
 }
 .feed-link,
 .chat {
@@ -2531,7 +2531,7 @@ img.img-topic {
 }
 .ImageGrid {
   width: 100%;
-  max-width: 1080px;
+  max-width: 1040px;
   margin: 0 auto;
   text-align: center;
 }
