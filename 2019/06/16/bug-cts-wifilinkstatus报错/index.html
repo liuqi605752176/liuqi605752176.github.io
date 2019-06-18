@@ -14,7 +14,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-CN">
+<html class="theme-next gemini use-motion" lang="zh-CN">
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -44,7 +44,7 @@
   
     
   
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.6/jquery.fancybox.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
 
 
 
@@ -78,7 +78,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Gemini',
     version: '7.1.1',
     sidebar: {"position":"left","display":"always","offset":12,"onmobile":false,"dimmer":false},
     back2top: true,
@@ -104,19 +104,19 @@
 
 
 
-  <meta name="description" content="BUG详情 此bug是在cts测试时遇到的 看logcat报错显示是wifigetlinklayerstatus报错。 这个问题遇到很多，cts好几条都是与之相关，还有在设置界面查看电池电量时，切换页面时很慢查看log，也是这个报错  解决方案 导入patch">
+  <meta name="description" content="BUG详情 此bug是在cts测试时遇到的 看logcat报错显示是wifigetlinklayerstatus报错。 这个问题遇到很多，cts好几条都是与之相关，还有在设置界面查看电池电量时，切换页面时很慢查看log，也是这个报错  ctsincidenthostTestCases not pass log:12.com.android.server.cts.BatteryStatsValic">
 <meta name="keywords" content="cts,wifi">
 <meta property="og:type" content="article">
-<meta property="og:title" content="bug-cts-wifilinkstatus报错">
+<meta property="og:title" content="[bug]cts-wifilinkstatus报错">
 <meta property="og:url" content="http://www.iliuqi.com/2019/06/16/bug-cts-wifilinkstatus报错/index.html">
 <meta property="og:site_name" content="那些年的旧时光">
-<meta property="og:description" content="BUG详情 此bug是在cts测试时遇到的 看logcat报错显示是wifigetlinklayerstatus报错。 这个问题遇到很多，cts好几条都是与之相关，还有在设置界面查看电池电量时，切换页面时很慢查看log，也是这个报错  解决方案 导入patch">
+<meta property="og:description" content="BUG详情 此bug是在cts测试时遇到的 看logcat报错显示是wifigetlinklayerstatus报错。 这个问题遇到很多，cts好几条都是与之相关，还有在设置界面查看电池电量时，切换页面时很慢查看log，也是这个报错  ctsincidenthostTestCases not pass log:12.com.android.server.cts.BatteryStatsValic">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://www.iliuqi.com/2019/06/16/bug-cts-wifilinkstatus报错/bug_20190616_02.jpg">
-<meta property="og:updated_time" content="2019-06-16T03:14:17.986Z">
+<meta property="og:updated_time" content="2019-06-17T14:23:20.214Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="bug-cts-wifilinkstatus报错">
-<meta name="twitter:description" content="BUG详情 此bug是在cts测试时遇到的 看logcat报错显示是wifigetlinklayerstatus报错。 这个问题遇到很多，cts好几条都是与之相关，还有在设置界面查看电池电量时，切换页面时很慢查看log，也是这个报错  解决方案 导入patch">
+<meta name="twitter:title" content="[bug]cts-wifilinkstatus报错">
+<meta name="twitter:description" content="BUG详情 此bug是在cts测试时遇到的 看logcat报错显示是wifigetlinklayerstatus报错。 这个问题遇到很多，cts好几条都是与之相关，还有在设置界面查看电池电量时，切换页面时很慢查看log，也是这个报错  ctsincidenthostTestCases not pass log:12.com.android.server.cts.BatteryStatsValic">
 <meta name="twitter:image" content="http://www.iliuqi.com/2019/06/16/bug-cts-wifilinkstatus报错/bug_20190616_02.jpg">
 
 
@@ -135,7 +135,7 @@
   };
 </script>
 
-  <title>bug-cts-wifilinkstatus报错 | 那些年的旧时光</title>
+  <title>[bug]cts-wifilinkstatus报错 | 那些年的旧时光</title>
   
 
 
@@ -369,9 +369,6 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
   
 
   
-    
-
-  
 
   
     <div class="site-search">
@@ -413,6 +410,9 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
       <div class="main-inner">
         <div class="content-wrap">
           
+            
+
+          
           <div id="content" class="content">
             
 
@@ -449,7 +449,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
 
         
         
-          <h1 class="post-title" itemprop="name headline">bug-cts-wifilinkstatus报错
+          <h1 class="post-title" itemprop="name headline">[bug]cts-wifilinkstatus报错
 
               
             
@@ -534,8 +534,22 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
 <p>看logcat报错显示是wifigetlinklayerstatus报错。</p>
 <p>这个问题遇到很多，cts好几条都是与之相关，还有在设置界面查看电池电量时，切换页面时很慢查看log，也是这个报错</p>
 </blockquote>
+<h2 id="ctsincidenthostTestCases-not-pass"><a href="#ctsincidenthostTestCases-not-pass" class="headerlink" title="ctsincidenthostTestCases not pass"></a>ctsincidenthostTestCases not pass</h2><blockquote>
+<p>log:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.com.android.server.cts.BatteryStatsValicationTest<span class="comment">#testRealtime ERROR:</span></span><br><span class="line">	junit.framework.AssertionFailedError.</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="vtshalwifiv1-0Host-not-pass"><a href="#vtshalwifiv1-0Host-not-pass" class="headerlink" title="vtshalwifiv1_0Host not pass"></a>vtshalwifiv1_0Host not pass</h2><blockquote>
+<p>log:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vtshalwifiv1_0Host<span class="comment">#wifistaifacehidltest.linklayerstatscollection(default)_32bit</span></span><br><span class="line">hardware/interfaces/wifi/1.0/vts/functional/wifi_sta_iface_hidl_test.cpp:152:Failure</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="get-wifi-status-timeout-in-setting"><a href="#get-wifi-status-timeout-in-setting" class="headerlink" title="get wifi status timeout in setting"></a>get wifi status timeout in setting</h2><blockquote>
+<p>log:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WifiHAL:wifi_get_link_stats:requestResponse Error:-7</span><br><span class="line">wifivendorhal:getwifilinklayerstats failed &#123;.code =</span><br><span class="line">	ERROR_UNKONWN,.description=.timed out&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h2 id="ctsstatsHostTestCases-not-pass"><a href="#ctsstatsHostTestCases-not-pass" class="headerlink" title="ctsstatsHostTestCases not pass"></a>ctsstatsHostTestCases not pass</h2><blockquote>
+<p>log:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">android.cts.stats.atom.HostAtomTests<span class="comment">#testWifiActivityInfo</span></span><br><span class="line">ERROR:java.lang.indexoutofboundsexception:index:0</span><br></pre></td></tr></table></figure></p>
+</blockquote>
 <h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><blockquote>
-<p>导入patch</p>
+<p>patch:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//core/wma/src/wma_utils.c</span></span><br><span class="line"></span><br><span class="line">tx_power_level_values=(<span class="keyword">uint8_t</span> *)param_tlvs-&gt;tx_time_per_power_level;</span><br><span class="line">-<span class="keyword">if</span>(fixed_param-&gt;total_num_tx_power_levels &gt;)</span><br><span class="line">+<span class="keyword">if</span>(fixed_param-&gt;total_num_tx_power_levels &amp;&amp; </span><br><span class="line">+ fixed_param-&gt;total_num_tx_power_levels &gt;</span><br><span class="line">rs_results-&gt;total_num_tx_power_levels)&#123;</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h1 id="Root-Cause"><a href="#Root-Cause" class="headerlink" title="Root Cause"></a>Root Cause</h1><blockquote>
 </blockquote>
 
       
@@ -571,7 +585,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
     
-    <a href="http://www.iliuqi.com/2019/06/16/bug-cts-wifilinkstatus报错/" title="bug-cts-wifilinkstatus报错">http://www.iliuqi.com/2019/06/16/bug-cts-wifilinkstatus报错/</a>
+    <a href="http://www.iliuqi.com/2019/06/16/bug-cts-wifilinkstatus报错/" title="[bug]cts-wifilinkstatus报错">http://www.iliuqi.com/2019/06/16/bug-cts-wifilinkstatus报错/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
@@ -599,8 +613,8 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/16/bug-wifi-p2p认证测试/" rel="next" title="bug-wifi-p2p认证测试">
-                <i class="fa fa-chevron-left"></i> bug-wifi-p2p认证测试
+              <a href="/2019/06/16/bug-wifi-p2p认证测试/" rel="next" title="[bug]wifi-p2p认证测试">
+                <i class="fa fa-chevron-left"></i> [bug]wifi-p2p认证测试
               </a>
             
           </div>
@@ -608,6 +622,10 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/17/bug-how-to-close-wifi-powersave-and-autoscan/" rel="prev" title="[bug]how-to-close-wifi-powersave-and-autoscan">
+                [bug]how-to-close-wifi-powersave-and-autoscan <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -683,7 +701,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-count">19</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -775,7 +793,11 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
                     
                       
                     
-                    <span class="site-state-item-count">22</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -850,7 +872,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#BUG详情"><span class="nav-number">1.</span> <span class="nav-text">BUG详情</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决方案"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#BUG详情"><span class="nav-number">1.</span> <span class="nav-text">BUG详情</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ctsincidenthostTestCases-not-pass"><span class="nav-number">1.1.</span> <span class="nav-text">ctsincidenthostTestCases not pass</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vtshalwifiv1-0Host-not-pass"><span class="nav-number">1.2.</span> <span class="nav-text">vtshalwifiv1_0Host not pass</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-wifi-status-timeout-in-setting"><span class="nav-number">1.3.</span> <span class="nav-text">get wifi status timeout in setting</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ctsstatsHostTestCases-not-pass"><span class="nav-number">1.4.</span> <span class="nav-text">ctsstatsHostTestCases not pass</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解决方案"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Root-Cause"><span class="nav-number">3.</span> <span class="nav-text">Root Cause</span></a></li></ol></div>
             
 
           </div>
@@ -987,7 +1009,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
 
 
   
-  <script src="[object Object]"></script>
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
 
   
   <script src="//cdn.jsdelivr.net/npm/jquery-lazyload@1/jquery.lazyload.min.js"></script>
@@ -999,7 +1021,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
 
   
-  <script src="/lib/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
 
 
   
@@ -1017,7 +1039,10 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
   
 
 
-  <script src="/js/schemes/muse.js?v=7.1.1"></script>
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
 
 
 
