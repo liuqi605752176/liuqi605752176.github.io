@@ -429,6 +429,184 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.iliuqi.com/2019/06/22/freertos任务级临界代码保护/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="liuqi">
+      <meta itemprop="description" content="男儿何不带吴钩，收取关山五十州">
+      <meta itemprop="image" content="/images/personal.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="那些年的旧时光">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/06/22/freertos任务级临界代码保护/" class="post-title-link" itemprop="url">freertos任务级临界代码保护</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-06-22 12:51:12" itemprop="dateCreated datePublished" datetime="2019-06-22T12:51:12+00:00">2019-06-22</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/单片机/" itemprop="url" rel="index"><span itemprop="name">单片机</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+		
+			<div class="out-img-topic">
+			<img src="images/abstract/20190622_01.jpg" class="img-topic">
+			</div>
+		
+	
+        
+          
+            <p>
+              ROOT
+最近做项目过程中，调用播放tts语音接口播放语音时概率性出现语音播报卡顿问题，下面对此问题解决过程做个简单记录。代码框架是一个语音播报任务，其他任务需要播报语音给此任务发送播报消息，收到播报消息后，播报对应消息的内容即可。
+
+
+任务优先级
+播报时卡顿，可能是因为播报过程中被其他任务打断造成
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/06/22/freertos任务级临界代码保护/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://www.iliuqi.com/2019/06/17/第一次约会/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3857,7 +4035,7 @@ The New World职业生涯
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-count">20</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -3888,7 +4066,9 @@ The New World职业生涯
                     
                       
                     
-                    <span class="site-state-item-count">7</span>
+                      
+                    
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -3953,7 +4133,11 @@ The New World职业生涯
                     
                       
                     
-                    <span class="site-state-item-count">24</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -4001,12 +4185,37 @@ The New World职业生涯
                   <a href="https://weibo.com/2209902513" title="Weibo &rarr; https://weibo.com/2209902513" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
                 </span>
               
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/liuqi605752176" title="CSDN &rarr; https://blog.csdn.net/liuqi605752176" rel="noopener" target="_blank"><i class="fa fa-fw fa-cube"></i>CSDN</a>
+                </span>
+              
             </div>
           
 	
           
 
           
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/qq_38240926" title="https://blog.csdn.net/qq_38240926" rel="noopener" target="_blank">雪地里</a>
+                  </li>
+                
+              </ul>
+            </div>
           
 
           

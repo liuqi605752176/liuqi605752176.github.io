@@ -113,7 +113,7 @@
 <meta property="og:description" content="BUG详情 此bug是在cts测试时遇到的 看logcat报错显示是wifigetlinklayerstatus报错。 这个问题遇到很多，cts好几条都是与之相关，还有在设置界面查看电池电量时，切换页面时很慢查看log，也是这个报错  ctsincidenthostTestCases not pass log:12.com.android.server.cts.BatteryStatsValic">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://www.iliuqi.com/2019/06/16/bug-cts-wifilinkstatus报错/bug_20190616_02.jpg">
-<meta property="og:updated_time" content="2019-06-17T14:23:20.214Z">
+<meta property="og:updated_time" content="2019-06-19T15:06:46.177Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[bug]cts-wifilinkstatus报错">
 <meta name="twitter:description" content="BUG详情 此bug是在cts测试时遇到的 看logcat报错显示是wifigetlinklayerstatus报错。 这个问题遇到很多，cts好几条都是与之相关，还有在设置界面查看电池电量时，切换页面时很慢查看log，也是这个报错  ctsincidenthostTestCases not pass log:12.com.android.server.cts.BatteryStatsValic">
@@ -550,6 +550,10 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
 <p>patch:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//core/wma/src/wma_utils.c</span></span><br><span class="line"></span><br><span class="line">tx_power_level_values=(<span class="keyword">uint8_t</span> *)param_tlvs-&gt;tx_time_per_power_level;</span><br><span class="line">-<span class="keyword">if</span>(fixed_param-&gt;total_num_tx_power_levels &gt;)</span><br><span class="line">+<span class="keyword">if</span>(fixed_param-&gt;total_num_tx_power_levels &amp;&amp; </span><br><span class="line">+ fixed_param-&gt;total_num_tx_power_levels &gt;</span><br><span class="line">rs_results-&gt;total_num_tx_power_levels)&#123;</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 </blockquote>
 <h1 id="Root-Cause"><a href="#Root-Cause" class="headerlink" title="Root Cause"></a>Root Cause</h1><blockquote>
+<p>Check if rs_results-&gt;total_num_tx_power_levels is allocated, before checking the OOB<br>in wma_unified_radio_tx_power_level_stats_event_handler for new<br>fixed_param-&gt;total_num_tx_power_levels<br>Original code was not present “if (rs_results-&gt;total_num_tx_power_levels”,<br>new code make sure ‘rs_results-&gt;total_num_tx_power_levels’ is allocated firstly. </p>
+</blockquote>
+<blockquote>
+<p>this analysis provided from Qcom R&amp;D team. </p>
 </blockquote>
 
       
@@ -701,7 +705,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-count">20</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -732,7 +736,9 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
                     
                       
                     
-                    <span class="site-state-item-count">7</span>
+                      
+                    
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -797,7 +803,11 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
                     
                       
                     
-                    <span class="site-state-item-count">24</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">26</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -845,12 +855,37 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
                   <a href="https://weibo.com/2209902513" title="Weibo &rarr; https://weibo.com/2209902513" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
                 </span>
               
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/liuqi605752176" title="CSDN &rarr; https://blog.csdn.net/liuqi605752176" rel="noopener" target="_blank"><i class="fa fa-fw fa-cube"></i>CSDN</a>
+                </span>
+              
             </div>
           
 	
           
 
           
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/qq_38240926" title="https://blog.csdn.net/qq_38240926" rel="noopener" target="_blank">雪地里</a>
+                  </li>
+                
+              </ul>
+            </div>
           
 
           
