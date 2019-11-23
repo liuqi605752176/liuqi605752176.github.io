@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+  <meta name="google-site-verification" content="u19RspDkePP12bSK4FPseLSC7wt1LBru96c1yChX3Po">
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.1">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.1">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.1" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.1.1',
+    sidebar: {"position":"left","display":"always","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: true,
+    fastclick: false,
+    lazyload: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="项目-飞机大战使用的模块-pygame pygame 就是一个 Python 模块，专为电子游戏设计 官方网站：https://www.pygame.org/ 提示：要学习第三方模块，通常最好的参考资料就在官方网站       网站栏目 内容     GettingStarted 在各平台安装模块的说明   Docs pygame 模块所有 类 和 子类 的参考手册    安装 pygame1$">
+<meta name="keywords" content="python,项目,飞机大战">
+<meta property="og:type" content="article">
+<meta property="og:title" content="项目-飞机大战">
+<meta property="og:url" content="http://www.iliuqi.com/2019/11/17/项目-飞机大战/index.html">
+<meta property="og:site_name" content="一个未来大佬的成长博客">
+<meta property="og:description" content="项目-飞机大战使用的模块-pygame pygame 就是一个 Python 模块，专为电子游戏设计 官方网站：https://www.pygame.org/ 提示：要学习第三方模块，通常最好的参考资料就在官方网站       网站栏目 内容     GettingStarted 在各平台安装模块的说明   Docs pygame 模块所有 类 和 子类 的参考手册    安装 pygame1$">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://www.iliuqi.com/2019/11/17/项目-飞机大战/002_游戏窗口和坐标系.png">
+<meta property="og:image" content="http://www.iliuqi.com/2019/11/17/项目-飞机大战/003_pygame.Rect.png">
+<meta property="og:image" content="http://www.iliuqi.com/2019/11/17/项目-飞机大战/004_加载和显示图像.png">
+<meta property="og:image" content="http://www.iliuqi.com/2019/11/17/项目-飞机大战/006_pygame.Sprite.png">
+<meta property="og:image" content="http://www.iliuqi.com/2019/11/17/项目-飞机大战/009_游戏主程序.png">
+<meta property="og:image" content="http://www.iliuqi.com/2019/11/17/项目-飞机大战/010_精灵组确定.png">
+<meta property="og:image" content="http://www.iliuqi.com/2019/11/17/项目-飞机大战/013_背景图片交替滚动.png">
+<meta property="og:image" content="http://www.iliuqi.com/2019/11/17/项目-飞机大战/014_派生Enemy子类.png">
+<meta property="og:image" content="http://www.iliuqi.com/2019/11/17/项目-飞机大战/006_pygame.SpriteII.png">
+<meta property="og:image" content="http://www.iliuqi.com/2019/11/17/项目-飞机大战/子弹.png">
+<meta property="og:updated_time" content="2019-11-17T01:28:59.377Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="项目-飞机大战">
+<meta name="twitter:description" content="项目-飞机大战使用的模块-pygame pygame 就是一个 Python 模块，专为电子游戏设计 官方网站：https://www.pygame.org/ 提示：要学习第三方模块，通常最好的参考资料就在官方网站       网站栏目 内容     GettingStarted 在各平台安装模块的说明   Docs pygame 模块所有 类 和 子类 的参考手册    安装 pygame1$">
+<meta name="twitter:image" content="http://www.iliuqi.com/2019/11/17/项目-飞机大战/002_游戏窗口和坐标系.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://www.iliuqi.com/2019/11/17/项目-飞机大战/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>项目-飞机大战 | 一个未来大佬的成长博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://github.com/liuqi605752176" class="github-corner" aria-label="View source on
+	GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; top: 0; border: 0;
+		right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142
+		L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6
+		119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3
+		123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9
+		134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5
+		119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0
+		127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4
+		163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6
+		187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2
+		216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4
+		203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1
+		C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7
+		141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover
+.octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes
+octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media
+(max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner
+	.octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一个未来大佬的成长博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-photos">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/photos" rel="section"><i class="menu-item-icon fa fa-fw fa-camera"></i> <br>相册</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://www.iliuqi.com/2019/11/17/项目-飞机大战/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="踏雪临风">
+      <meta itemprop="description" content="男儿何不带吴钩，收取关山五十州">
+      <meta itemprop="image" content="/images/personal.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一个未来大佬的成长博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">项目-飞机大战
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-17 08:37:18" itemprop="dateCreated datePublished" datetime="2019-11-17T08:37:18+08:00">2019-11-17</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/python学习笔记/" itemprop="url" rel="index"><span itemprop="name">python学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="项目-飞机大战"><a href="#项目-飞机大战" class="headerlink" title="项目-飞机大战"></a>项目-飞机大战</h1><h2 id="使用的模块-pygame"><a href="#使用的模块-pygame" class="headerlink" title="使用的模块-pygame"></a>使用的模块-pygame</h2><ul>
+<li><code>pygame</code> 就是一个 Python 模块，专为电子游戏设计</li>
+<li>官方网站：<a href="https://www.pygame.org/" target="_blank" rel="noopener">https://www.pygame.org/</a><ul>
+<li><strong>提示</strong>：要学习第三方模块，通常最好的参考资料就在官方网站</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>网站栏目</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GettingStarted</code></td>
+<td>在各平台安装模块的说明</td>
+</tr>
+<tr>
+<td><code>Docs</code></td>
+<td><code>pygame</code> 模块所有 <strong>类</strong> 和 <strong>子类</strong> 的参考手册</td>
+</tr>
+</tbody>
+</table>
+<h3 id="安装-pygame"><a href="#安装-pygame" class="headerlink" title="安装 pygame"></a>安装 pygame</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo pip3 install pygame</span><br></pre></td></tr></table></figure>
+<h3 id="验证安装"><a href="#验证安装" class="headerlink" title="验证安装"></a>验证安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python3 -m pygame.examples.aliens</span><br></pre></td></tr></table></figure>
+<h2 id="pygame的基本应用"><a href="#pygame的基本应用" class="headerlink" title="pygame的基本应用"></a>pygame的基本应用</h2><h3 id="初始化和退出"><a href="#初始化和退出" class="headerlink" title="初始化和退出"></a>初始化和退出</h3><ul>
+<li>要使用 <code>pygame</code> 提供的所有功能之前，需要调用 <code>init</code> 方法</li>
+<li>在游戏结束前需要调用一下 <code>quit</code> 方法 </li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pygame.init()</code></td>
+<td>导入并初始化所有 <code>pygame</code> 模块，使用其他模块之前，必须先调用 <code>init</code> 方法</td>
+</tr>
+<tr>
+<td><code>pygame.quit()</code></td>
+<td>卸载所有 <code>pygame</code> 模块，在游戏结束之前调用！</td>
+</tr>
+</tbody>
+</table>
+<h3 id="坐标系"><a href="#坐标系" class="headerlink" title="坐标系"></a>坐标系</h3><ul>
+<li><strong>原点</strong> 在 <strong>左上角</strong> <code>(0, 0)</code></li>
+<li><strong>x 轴</strong> 水平方向向 <strong>右</strong>，逐渐增加</li>
+<li><strong>y 轴</strong> 垂直方向向 <strong>下</strong>，逐渐增加</li>
+</ul>
+<p><img src="002_游戏窗口和坐标系.png" alt="002_游戏窗口和坐标系"></p>
+<ul>
+<li>在游戏中，<strong>所有可见的元素</strong> 都是以 <strong>矩形区域</strong> 来描述位置的<ul>
+<li>要描述一个矩形区域有四个要素：<code>(x, y) (width, height)</code></li>
+</ul>
+</li>
+<li><code>pygame</code> 专门提供了一个类 <code>pygame.Rect</code> 用于描述 <strong>矩形区域</strong></li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Rect(x, y, width, height) -&gt; Rect</span><br></pre></td></tr></table></figure>
+<p><img src="003_pygame.Rect.png" alt="pygame.Rect"></p>
+<h3 id="创建游戏的主窗口"><a href="#创建游戏的主窗口" class="headerlink" title="创建游戏的主窗口"></a>创建游戏的主窗口</h3><ul>
+<li><code>pygame</code> 专门提供了一个 <strong>模块</strong> <code>pygame.display</code> 用于创建、管理 <strong>游戏窗口</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pygame.display.set_mode()</code></td>
+<td>初始化游戏显示窗口</td>
+</tr>
+<tr>
+<td><code>pygame.display.update()</code></td>
+<td>刷新屏幕内容显示，稍后使用</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>set_mode</code> 方法</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set_mode(resolution=(0,0), flags=0, depth=0) -&gt; Surface</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>作用</strong> —— 创建游戏显示窗口</li>
+<li><strong>参数</strong><ul>
+<li><code>resolution</code> 指定屏幕的 <code>宽</code> 和 <code>高</code>，默认创建的窗口大小和屏幕大小一致</li>
+<li><code>flags</code> 参数指定屏幕的附加选项，例如是否全屏等等，默认不需要传递</li>
+<li><code>depth</code> 参数表示颜色的位数，默认自动匹配</li>
+</ul>
+</li>
+<li><strong>返回值</strong><ul>
+<li><strong>暂时</strong> 可以理解为 <strong>游戏的屏幕</strong>，<strong>游戏的元素</strong> 都需要被绘制到 <strong>游戏的屏幕</strong> 上</li>
+</ul>
+</li>
+<li><strong>注意</strong>：必须使用变量记录 <code>set_mode</code> 方法的返回结果！因为：后续所有的图像绘制都基于这个返回结果</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建游戏主窗口</span></span><br><span class="line">screen = pygame.display.set_mode((<span class="number">480</span>, <span class="number">700</span>))</span><br></pre></td></tr></table></figure>
+<h3 id="图像的绘制"><a href="#图像的绘制" class="headerlink" title="图像的绘制"></a>图像的绘制</h3><ul>
+<li>在游戏中，能够看到的 <strong>游戏元素</strong> 大多都是 <strong>图像</strong><ul>
+<li><strong>图像文件</strong> 初始是保存在磁盘上的，如果需要使用，<strong>第一步</strong> 就需要 <strong>被加载到内存</strong></li>
+</ul>
+</li>
+<li>要在屏幕上 <strong>看到某一个图像的内容</strong>，需要按照三个步骤：<ol>
+<li>使用 <code>pygame.image.load()</code> <strong>加载图像的数据</strong></li>
+<li>使用 <strong>游戏屏幕</strong> 对象，调用 <code>blit</code> 方法 将图像绘制到指定位置</li>
+<li>调用 <code>pygame.display.update()</code> 方法更新整个屏幕的显示</li>
+</ol>
+</li>
+</ul>
+<p><img src="004_加载和显示图像.png" alt="加载和显示图像"></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">bg = pygame.image.load()</td>
+<td>加载图片</td>
+</tr>
+<tr>
+<td style="text-align:left">screen.blit(bg,(0,0))</td>
+<td>从(0,0)开始绘制图片</td>
+</tr>
+<tr>
+<td style="text-align:left">pygame.display.update()</td>
+<td>屏幕刷新显示图片</td>
+</tr>
+</tbody>
+</table>
+<h3 id="时钟"><a href="#时钟" class="headerlink" title="时钟"></a>时钟</h3><p>动画的效果其实就是图像按照一定的帧率移动导致的，所以需要时钟来进行控制</p>
+<ul>
+<li>pygame<code>专门提供了一个类</code>pygame.time.Clock` 可以非常方便的设置屏幕绘制速度 —— <strong>刷新帧率</strong></li>
+<li>要使用 <strong>时钟对象</strong> 需要两步：<ul>
+<li>1）在 <strong>游戏初始化</strong> 创建一个 <strong>时钟对象</strong></li>
+<li>2）在 <strong>游戏循环</strong> 中让时钟对象调用 <code>tick(帧率)</code> 方法 </li>
+</ul>
+</li>
+<li><code>tick</code> 方法会根据 <strong>上次被调用的时间</strong>，自动设置 <strong>游戏循环</strong> 中的延时</li>
+</ul>
+<h3 id="事件监听"><a href="#事件监听" class="headerlink" title="事件监听"></a>事件监听</h3><h4 id="事件-event"><a href="#事件-event" class="headerlink" title="事件 event"></a>事件 <code>event</code></h4><ul>
+<li>就是游戏启动后，<strong>用户针对游戏所做的操作</strong></li>
+<li>例如：<strong>点击关闭按钮</strong>，<strong>点击鼠标</strong>，<strong>按下键盘</strong>…</li>
+</ul>
+<h4 id="监听"><a href="#监听" class="headerlink" title="监听"></a>监听</h4><ul>
+<li>在 <strong>游戏循环</strong> 中，判断用户 <strong>具体的操作</strong></li>
+</ul>
+<blockquote>
+<p>只有 <strong>捕获</strong> 到用户具体的操作，才能有针对性的做出响应</p>
+</blockquote>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><ul>
+<li><code>pygame</code> 中通过 <code>pygame.event.get()</code> 可以获得 <strong>用户当前所做动作</strong> 的 <strong>事件列表</strong><ul>
+<li>用户可以同一时间做很多事情</li>
+</ul>
+</li>
+</ul>
+<h3 id="定时器"><a href="#定时器" class="headerlink" title="定时器"></a>定时器</h3><p>因为敌机的出现是随机的，所以我们需要一个定时器每隔一段时间就自动出现一架飞机</p>
+<ul>
+<li>在 <code>pygame</code> 中可以使用 <code>pygame.time.set_timer()</code> 来添加 <strong>定时器</strong></li>
+<li>所谓 <strong>定时器</strong>，就是 <strong>每隔一段时间</strong>，去 <strong>执行一些动作</strong></li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set_timer(eventid, milliseconds) -&gt; None</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>set_timer</code> 可以创建一个 <strong>事件</strong></li>
+<li>可以在 <strong>游戏循环</strong> 的 <strong>事件监听</strong> 方法中捕获到该事件</li>
+<li>第 1 个参数 <strong>事件代号</strong> 需要基于常量 <code>pygame.USEREVENT</code> 来指定<ul>
+<li><code>USEREVENT</code> 是一个整数，再增加的事件可以使用 <code>USEREVENT + 1</code> 指定，依次类推…</li>
+</ul>
+</li>
+<li>第 2 个参数是 <strong>事件触发</strong> 间隔的 <strong>毫秒值</strong></li>
+</ul>
+<p><strong>定时器事件的监听</strong></p>
+<ul>
+<li>通过 <code>pygame.event.get()</code> 可以获取当前时刻所有的 <strong>事件列表</strong></li>
+<li><strong>遍历列表</strong> 并且判断 <code>event.type</code> 是否等于 <code>eventid</code>，如果相等，表示 <strong>定时器事件</strong> 发生</li>
+</ul>
+<h3 id="精灵和精灵组"><a href="#精灵和精灵组" class="headerlink" title="精灵和精灵组"></a>精灵和精灵组</h3><p>为了简化开发步骤，<code>pygame</code> 提供了两个类</p>
+<ul>
+<li><code>pygame.sprite.Sprite</code> —— 存储 <strong>图像数据 image</strong> 和 <strong>位置 rect</strong> 的 <strong>对象</strong></li>
+<li><code>pygame.sprite.Group</code></li>
+</ul>
+<p><img src="006_pygame.Sprite.png" alt="pygame.Sprite.png"></p>
+<h4 id="精灵"><a href="#精灵" class="headerlink" title="精灵"></a>精灵</h4><ul>
+<li>在游戏开发中，通常把 <strong>显示图像的对象</strong> 叫做精灵 <code>Sprite</code></li>
+<li><strong>精灵</strong> 需要 有 <strong>两个重要的属性</strong><ul>
+<li><code>image</code> 要显示的图像</li>
+<li><code>rect</code> 图像要显示在屏幕的位置</li>
+</ul>
+</li>
+<li>默认的 <code>update()</code> 方法什么事情也没做<ul>
+<li>子类可以重写此方法，在每次刷新屏幕时，更新精灵位置</li>
+</ul>
+</li>
+<li><strong>注意</strong>：<code>pygame.sprite.Sprite</code> 并没有提供 <code>image</code> 和 <code>rect</code> 两个属性<ul>
+<li>需要程序员从 <code>pygame.sprite.Sprite</code> 派生子类</li>
+<li>并在 <strong>子类</strong> 的 <strong>初始化方法</strong> 中，设置 <code>image</code> 和 <code>rect</code> 属性</li>
+</ul>
+</li>
+</ul>
+<h4 id="精灵组"><a href="#精灵组" class="headerlink" title="精灵组"></a>精灵组</h4><ul>
+<li>一个 <strong>精灵组</strong> 可以包含多个 <strong>精灵</strong> 对象</li>
+<li>调用 <strong>精灵组</strong> 对象的 <code>update()</code> 方法<ul>
+<li>可以 <strong>自动</strong> 调用 <strong>组内每一个精灵</strong> 的 <code>update()</code> 方法</li>
+</ul>
+</li>
+<li>调用 <strong>精灵组</strong> 对象的 <code>draw(屏幕对象)</code> 方法<ul>
+<li>可以将 <strong>组内每一个精灵</strong> 的 <code>image</code> 绘制在 <code>rect</code> 位置</li>
+</ul>
+</li>
+</ul>
+<h2 id="游戏框架"><a href="#游戏框架" class="headerlink" title="游戏框架"></a>游戏框架</h2><h3 id="主游戏类PlaneGame"><a href="#主游戏类PlaneGame" class="headerlink" title="主游戏类PlaneGame"></a>主游戏类PlaneGame</h3><p><img src="009_游戏主程序.png" alt="游戏主程序"></p>
+<ul>
+<li><strong>游戏初始化</strong> ——  <code>__init__()</code> 会调用以下方法： </li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__create_sprites(self)</code></td>
+<td>创建所有精灵和精灵组</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>游戏循环</strong> —— <code>start_game()</code> 会调用以下方法：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__event_handler(self)</code></td>
+<td>事件监听</td>
+</tr>
+<tr>
+<td><code>__check_collide(self)</code></td>
+<td>碰撞检测 —— 子弹销毁敌机、敌机撞毁英雄</td>
+</tr>
+<tr>
+<td><code>__update_sprites(self)</code></td>
+<td>精灵组更新和绘制</td>
+</tr>
+<tr>
+<td><code>__game_over()</code></td>
+<td>游戏结束</td>
+</tr>
+</tbody>
+</table>
+<h3 id="精灵组的创建"><a href="#精灵组的创建" class="headerlink" title="精灵组的创建"></a>精灵组的创建</h3><p><img src="010_精灵组确定.png" alt="精灵组确定"></p>
+<ul>
+<li>创建精灵组方法</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__create_sprites</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="string">"""创建精灵组"""</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 背景组</span></span><br><span class="line">    self.back_group = pygame.sprite.Group()</span><br><span class="line">    <span class="comment"># 敌机组</span></span><br><span class="line">    self.enemy_group = pygame.sprite.Group()</span><br><span class="line">    <span class="comment"># 英雄组</span></span><br><span class="line">    self.hero_group = pygame.sprite.Group()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>更新精灵组方法</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__update_sprites</span><span class="params">(self)</span>:</span></span><br><span class="line">    <span class="string">"""更新精灵组"""</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> group <span class="keyword">in</span> [self.back_group, self.enemy_group, self.hero_group]:</span><br><span class="line">    </span><br><span class="line">        group.update()</span><br><span class="line">        group.draw(self.screen)</span><br></pre></td></tr></table></figure>
+<h2 id="背景图片"><a href="#背景图片" class="headerlink" title="背景图片"></a>背景图片</h2><p><img src="013_背景图片交替滚动.png" alt="背景图片交替滚动"></p>
+<ol>
+<li>创建两张背景图像精灵<ul>
+<li>第 <code>1</code> 张 <strong>完全和屏幕重合</strong></li>
+<li>第 <code>2</code> 张在 <strong>屏幕的正上方</strong></li>
+</ul>
+</li>
+<li>两张图像 <strong>一起向下方运动</strong><ul>
+<li><code>self.rect.y += self.speed</code></li>
+</ul>
+</li>
+<li>当 <strong>任意背景精灵</strong> 的 <code>rect.y &gt;= 屏幕的高度</code> 说明已经 <strong>移动到屏幕下方</strong></li>
+<li>将 <strong>移动到屏幕下方的这张图像</strong> 设置到 <strong>屏幕的正上方</strong><ul>
+<li><code>rect.y = -rect.height</code>  </li>
+</ul>
+</li>
+</ol>
+<h2 id="敌机精灵组"><a href="#敌机精灵组" class="headerlink" title="敌机精灵组"></a>敌机精灵组</h2><p><img src="014_派生Enemy子类.png" alt="派生Enemy子类"></p>
+<ul>
+<li><strong>初始化方法</strong><ul>
+<li>指定 <strong>敌机图片</strong></li>
+<li><strong>随机</strong> 敌机的 <strong>初始位置</strong> 和 <strong>初始速度</strong></li>
+</ul>
+</li>
+<li>重写 <strong>update()</strong> 方法<ul>
+<li>判断 <strong>是否飞出屏幕</strong>，如果是，从 <strong>精灵组</strong> 删除</li>
+</ul>
+</li>
+</ul>
+<h3 id="需要实现的功能"><a href="#需要实现的功能" class="headerlink" title="需要实现的功能"></a>需要实现的功能</h3><ul>
+<li>新建 <code>Enemy</code> 继承自 <code>GameSprite</code></li>
+<li>重写 <strong>初始化方法</strong>，直接指定 <strong>图片名称</strong></li>
+<li><strong>随机速度</strong> 和 <strong>随机位置</strong> 的指定由random模块来随机化</li>
+<li>重写 <code>update</code> 方法，判断是否飞出屏幕</li>
+</ul>
+<h3 id="创建敌机精灵组"><a href="#创建敌机精灵组" class="headerlink" title="创建敌机精灵组"></a>创建敌机精灵组</h3><ol>
+<li>在 <code>__create_sprites</code>，添加 <strong>敌机精灵组</strong><ul>
+<li>敌机是 <strong>定时被创建的</strong>，因此在初始化方法中，不需要创建敌机</li>
+</ul>
+</li>
+<li>在 <code>__event_handler</code>，创建敌机，并且 <strong>添加到精灵组</strong><ul>
+<li>调用 <strong>精灵组</strong> 的 <code>add</code> 方法可以 <strong>向精灵组添加精灵</strong></li>
+</ul>
+</li>
+<li>在 <code>__update_sprites</code>，让 <strong>敌机精灵组</strong> 调用 <code>update</code> 和 <code>draw</code> 方法</li>
+</ol>
+<p><img src="006_pygame.SpriteII.png" alt="pygame.SpriteII"></p>
+<h3 id="随机"><a href="#随机" class="headerlink" title="随机"></a>随机</h3><p>使用 <code>pygame.Rect</code> 提供的 <code>bottom</code> 属性，在指定敌机初始位置时，会比较方便</p>
+<ul>
+<li><code>bottom = y + height</code></li>
+<li><code>y = bottom - height</code></li>
+</ul>
+<h4 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现"></a>代码实现</h4><ul>
+<li>修改 <strong>初始化方法</strong>，随机敌机出现 <strong>速度</strong> 和 <strong>位置</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 1. 调用父类方法，创建敌机精灵，并且指定敌机的图像</span></span><br><span class="line">    super().__init__(<span class="string">"./images/enemy1.png"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2. 设置敌机的随机初始速度 1 ~ 3</span></span><br><span class="line">    self.speed = random.randint(<span class="number">1</span>, <span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3. 设置敌机的随机初始位置</span></span><br><span class="line">    self.rect.bottom = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    max_x = SCREEN_RECT.width - self.rect.width</span><br><span class="line">    self.rect.x = random.randint(<span class="number">0</span>, max_x)</span><br></pre></td></tr></table></figure>
+<h2 id="英雄战机精灵"><a href="#英雄战机精灵" class="headerlink" title="英雄战机精灵"></a>英雄战机精灵</h2><h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><ol>
+<li>游戏启动后，<strong>英雄</strong> 出现在屏幕的 <strong>水平中间</strong> 位置，距离 <strong>屏幕底部</strong> <code>120</code> <strong>像素</strong></li>
+<li><strong>英雄</strong> 每隔 <code>0.5</code> 秒发射一次子弹，每次 <strong>连发三枚子弹</strong></li>
+<li><strong>英雄</strong> 默认不会移动，需要通过 <strong>左/右</strong> 方向键，控制 <strong>英雄</strong> 在水平方向移动</li>
+</ol>
+<h3 id="创建英雄战机"><a href="#创建英雄战机" class="headerlink" title="创建英雄战机"></a>创建英雄战机</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hero</span><span class="params">(GameSprite)</span>:</span></span><br><span class="line">    <span class="string">"""英雄精灵"""</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line"></span><br><span class="line">        super().__init__(<span class="string">"./images/me1.png"</span>, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 设置初始位置</span></span><br><span class="line">        self.rect.centerx = SCREEN_RECT.centerx</span><br><span class="line">        self.rect.bottom = SCREEN_RECT.bottom - <span class="number">120</span></span><br></pre></td></tr></table></figure>
+<h3 id="屏幕上绘制英雄"><a href="#屏幕上绘制英雄" class="headerlink" title="屏幕上绘制英雄"></a>屏幕上绘制英雄</h3><ol>
+<li>在 <code>__create_sprites</code>，添加 <strong>英雄精灵</strong> 和 <strong>英雄精灵组</strong><ul>
+<li>后续要针对 <strong>英雄</strong> 做 <strong>碰撞检测</strong> 以及 <strong>发射子弹</strong></li>
+<li>所以 <strong>英雄</strong> 需要 <strong>单独定义成属性</strong></li>
+</ul>
+</li>
+<li>在 <code>__update_sprites</code>，让 <strong>英雄精灵组</strong> 调用 <code>update</code> 和 <code>draw</code> 方法</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__create_sprites</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment">#...</span></span><br><span class="line">	self.hero = Hero()</span><br><span class="line">	self.hero_group = pygame.sprite.Group(self.hero)</span><br><span class="line">	<span class="comment">#...</span></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__update_sprites</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment">#...</span></span><br><span class="line">    self.hero_group.update()</span><br><span class="line">	self.hero_group.draw(self.screen)</span><br><span class="line">    <span class="comment">#...</span></span><br></pre></td></tr></table></figure>
+<h3 id="战机的移动"><a href="#战机的移动" class="headerlink" title="战机的移动"></a>战机的移动</h3><blockquote>
+<p>在 <code>pygame</code> 中针对 <strong>键盘按键的捕获</strong>，有 <strong>两种</strong> 方式</p>
+</blockquote>
+<ul>
+<li><strong>第一种方式</strong> 判断 <code>event.type == pygame.KEYDOWN</code>，用户 <strong>必须要抬起按键</strong> 才算一次 <strong>按键事件</strong>，<strong>操作灵活性会大打折扣</strong></li>
+<li><p><strong>第二种方式</strong> </p>
+<ol>
+<li><p>首先使用 <code>pygame.key.get_pressed()</code> 返回 <strong>所有按键元组</strong></p>
+</li>
+<li><p>通过 <strong>键盘常量</strong>，判断元组中 <strong>某一个键是否被按下</strong> —— 如果被按下，对应数值为 <code>1</code></p>
+<p><strong>第二种方式</strong> 用户可以按住方向键不放，就能够实现持续向某一个方向移动了，<strong>操作灵活性更好</strong></p>
+</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update</span><span class="params">(self)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 飞机水平移动</span></span><br><span class="line">    self.rect.x += self.speed</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__event_handler</span><span class="params">()</span>:</span></span><br><span class="line"><span class="comment"># 获取用户按键</span></span><br><span class="line">keys_pressed = pygame.key.get_pressed()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> keys_pressed[pygame.K_RIGHT]:</span><br><span class="line">    self.hero.speed = <span class="number">2</span></span><br><span class="line"><span class="keyword">elif</span> keys_pressed[pygame.K_LEFT]:</span><br><span class="line">    self.hero.speed = <span class="number">-2</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    self.hero.speed = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>原理就是通过按键的事件检测来赋予hero.speed来控制左移还是右移，通过hero.update方法来进行刷新</p>
+<h2 id="子弹精灵组"><a href="#子弹精灵组" class="headerlink" title="子弹精灵组"></a>子弹精灵组</h2><ol>
+<li>在 <code>Hero</code> 的 <strong>初始化方法</strong> 中创建 <strong>子弹精灵组</strong> 属性</li>
+<li>修改 <code>plane_main.py</code> 的 <code>__update_sprites</code> 方法，让 <strong>子弹精灵组</strong> 调用 <code>update</code> 和 <code>draw</code> 方法</li>
+<li>实现 <code>fire()</code> 方法<ul>
+<li>创建子弹精灵</li>
+<li>设置初始位置 —— 在 <strong>英雄的正上方</strong></li>
+<li>将 <strong>子弹</strong> 添加到精灵组</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__create_sprites</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 创建子弹的精灵组</span></span><br><span class="line">    self.bullets = pygame.sprite.Group()</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hero</span><span class="params">(GameSprites)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">fire</span><span class="params">(self)</span>:</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 1. 创建子弹精灵</span></span><br><span class="line">        bullet = Bullet()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 2. 设置精灵的位置</span></span><br><span class="line">        bullet.rect.bottom = self.rect.y - <span class="number">20</span></span><br><span class="line">        bullet.rect.centerx = self.rect.centerx</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 3. 将精灵添加到精灵组</span></span><br><span class="line">        self.bullets.add(bullet)</span><br></pre></td></tr></table></figure>
+<p><img src="子弹.png" alt="子弹"></p>
+<h2 id="碰撞检测"><a href="#碰撞检测" class="headerlink" title="碰撞检测"></a>碰撞检测</h2><p>pygame` 提供了 <strong>两个非常方便</strong> 的方法可以实现碰撞检测：</p>
+<h3 id="pygame-sprite-groupcollide"><a href="#pygame-sprite-groupcollide" class="headerlink" title="pygame.sprite.groupcollide()"></a>pygame.sprite.groupcollide()</h3><ul>
+<li><strong>两个精灵组</strong> 中 <strong>所有的精灵</strong> 的碰撞检测</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">groupcollide(group1, group2, dokill1, dokill2, collided = None) -&gt; Sprite_dict</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果将 <code>dokill</code> 设置为 <code>True</code>，则 <strong>发生碰撞的精灵将被自动移除</strong></li>
+<li><code>collided</code> 参数是用于 <strong>计算碰撞的回调函数</strong><ul>
+<li>如果没有指定，则每个精灵必须有一个 <code>rect</code> 属性</li>
+</ul>
+</li>
+</ul>
+<h3 id="pygame-sprite-spritecollide"><a href="#pygame-sprite-spritecollide" class="headerlink" title="pygame.sprite.spritecollide()"></a>pygame.sprite.spritecollide()</h3><ul>
+<li>判断 <strong>某个精灵</strong> 和 <strong>指定精灵组</strong> 中的精灵的碰撞</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spritecollide(sprite, group, dokill, collided = None) -&gt; Sprite_list</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果将 <code>dokill</code> 设置为 <code>True</code>，则 <strong>指定精灵组</strong> 中 <strong>发生碰撞的精灵将被自动移除</strong></li>
+<li><code>collided</code> 参数是用于 <strong>计算碰撞的回调函数</strong><ul>
+<li>如果没有指定，则每个精灵必须有一个 <code>rect</code> 属性</li>
+</ul>
+</li>
+<li>返回 <strong>精灵组</strong> 中跟 <strong>精灵</strong> 发生碰撞的 <strong>精灵列表</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__check_collide</span><span class="params">(self)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 1. 子弹摧毁敌机</span></span><br><span class="line">    pygame.sprite.groupcollide(self.hero.bullets, self.enemy_group, <span class="literal">True</span>, <span class="literal">True</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 2. 敌机撞毁英雄</span></span><br><span class="line">    enemies = pygame.sprite.spritecollide(self.hero, self.enemy_group, <span class="literal">True</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 判断列表时候有内容</span></span><br><span class="line">    <span class="keyword">if</span> len(enemies) &gt; <span class="number">0</span>:</span><br><span class="line">    </span><br><span class="line">        <span class="comment"># 让英雄牺牲</span></span><br><span class="line">        self.hero.kill()</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 结束游戏</span></span><br><span class="line">        PlaneGame.__game_over()</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+      <div>
+        
+
+
+
+
+  
+
+
+
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>踏雪临风</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    
+    <a href="http://www.iliuqi.com/2019/11/17/项目-飞机大战/" title="项目-飞机大战">http://www.iliuqi.com/2019/11/17/项目-飞机大战/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+          
+            <a href="/tags/项目/" rel="tag"><i class="fa fa-tag"></i> 项目</a>
+          
+            <a href="/tags/飞机大战/" rel="tag"><i class="fa fa-tag"></i> 飞机大战</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/16/eval函数/" rel="next" title="eval函数">
+                <i class="fa fa-chevron-left"></i> eval函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/22/保留最后N个元素-collections-deque/" rel="prev" title="保留最后N个元素-collections.deque">
+                保留最后N个元素-collections.deque <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zOTQzMS8xNTk1OA=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/personal.gif" alt="踏雪临风">
+            
+              <p class="site-author-name" itemprop="name">踏雪临风</p>
+              <div class="site-description motion-element" itemprop="description">男儿何不带吴钩，收取关山五十州</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">65</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                      <a href="/tags/">
+                    
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">78</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/liuqi605752176" title="GitHub &rarr; https://github.com/liuqi605752176" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:liuqi605752176@outlook.com" title="E-Mail &rarr; mailto:liuqi605752176@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://weibo.com/2209902513" title="Weibo &rarr; https://weibo.com/2209902513" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://blog.csdn.net/liuqi605752176" title="CSDN &rarr; https://blog.csdn.net/liuqi605752176" rel="noopener" target="_blank"><i class="fa fa-fw fa-cube"></i>CSDN</a>
+                </span>
+              
+            </div>
+          
+	
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/qq_38240926" title="https://blog.csdn.net/qq_38240926" rel="noopener" target="_blank">雪地里</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#项目-飞机大战"><span class="nav-number">1.</span> <span class="nav-text">项目-飞机大战</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用的模块-pygame"><span class="nav-number">1.1.</span> <span class="nav-text">使用的模块-pygame</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-pygame"><span class="nav-number">1.1.1.</span> <span class="nav-text">安装 pygame</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证安装"><span class="nav-number">1.1.2.</span> <span class="nav-text">验证安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pygame的基本应用"><span class="nav-number">1.2.</span> <span class="nav-text">pygame的基本应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化和退出"><span class="nav-number">1.2.1.</span> <span class="nav-text">初始化和退出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#坐标系"><span class="nav-number">1.2.2.</span> <span class="nav-text">坐标系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建游戏的主窗口"><span class="nav-number">1.2.3.</span> <span class="nav-text">创建游戏的主窗口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图像的绘制"><span class="nav-number">1.2.4.</span> <span class="nav-text">图像的绘制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时钟"><span class="nav-number">1.2.5.</span> <span class="nav-text">时钟</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件监听"><span class="nav-number">1.2.6.</span> <span class="nav-text">事件监听</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#事件-event"><span class="nav-number">1.2.6.1.</span> <span class="nav-text">事件 event</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#监听"><span class="nav-number">1.2.6.2.</span> <span class="nav-text">监听</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码实现"><span class="nav-number">1.2.6.3.</span> <span class="nav-text">代码实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定时器"><span class="nav-number">1.2.7.</span> <span class="nav-text">定时器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#精灵和精灵组"><span class="nav-number">1.2.8.</span> <span class="nav-text">精灵和精灵组</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#精灵"><span class="nav-number">1.2.8.1.</span> <span class="nav-text">精灵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#精灵组"><span class="nav-number">1.2.8.2.</span> <span class="nav-text">精灵组</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#游戏框架"><span class="nav-number">1.3.</span> <span class="nav-text">游戏框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主游戏类PlaneGame"><span class="nav-number">1.3.1.</span> <span class="nav-text">主游戏类PlaneGame</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#精灵组的创建"><span class="nav-number">1.3.2.</span> <span class="nav-text">精灵组的创建</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#背景图片"><span class="nav-number">1.4.</span> <span class="nav-text">背景图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#敌机精灵组"><span class="nav-number">1.5.</span> <span class="nav-text">敌机精灵组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#需要实现的功能"><span class="nav-number">1.5.1.</span> <span class="nav-text">需要实现的功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建敌机精灵组"><span class="nav-number">1.5.2.</span> <span class="nav-text">创建敌机精灵组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#随机"><span class="nav-number">1.5.3.</span> <span class="nav-text">随机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#代码实现-1"><span class="nav-number">1.5.3.1.</span> <span class="nav-text">代码实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#英雄战机精灵"><span class="nav-number">1.6.</span> <span class="nav-text">英雄战机精灵</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#需求"><span class="nav-number">1.6.1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建英雄战机"><span class="nav-number">1.6.2.</span> <span class="nav-text">创建英雄战机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#屏幕上绘制英雄"><span class="nav-number">1.6.3.</span> <span class="nav-text">屏幕上绘制英雄</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#战机的移动"><span class="nav-number">1.6.4.</span> <span class="nav-text">战机的移动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#子弹精灵组"><span class="nav-number">1.7.</span> <span class="nav-text">子弹精灵组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#碰撞检测"><span class="nav-number">1.8.</span> <span class="nav-text">碰撞检测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pygame-sprite-groupcollide"><span class="nav-number">1.8.1.</span> <span class="nav-text">pygame.sprite.groupcollide()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pygame-sprite-spritecollide"><span class="nav-number">1.8.2.</span> <span class="nav-text">pygame.sprite.spritecollide()</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-liuqi"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liuqi</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+  <script type="text/javascript" src="/js/src/clicklove.js"></script>
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+  
+    
+    
+  
+  <script color="0,0,255" opacity="1" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/jquery-lazyload@1/jquery.lazyload.min.js"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+
+
+  
+
+
+
+
+  <script type="text/javascript" src="/js/utils.js?v=7.1.1"></script>
+
+  <script type="text/javascript" src="/js/motion.js?v=7.1.1"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.1"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.1"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.1"></script>
+<script src="/js/post-details.js?v=7.1.1"></script>
+
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.1"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script>
+  window.livereOptions = {
+    refer: '2019/11/17/项目-飞机大战/'
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
