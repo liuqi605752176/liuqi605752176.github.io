@@ -576,7 +576,7 @@ octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80
 <p><img src="MAC报头中的电源管理位.png" alt="MAC报头中的电源管理位"></p>
 <h2 id="节电模式"><a href="#节电模式" class="headerlink" title="节电模式"></a>节电模式</h2><p>可以关闭某些收发器组件，比如天线等，从而节省电力。MAC报头电源管理位置为1表示正在使用节电模式。此时AP会缓存客户端所有的802.11帧。</p>
 <h1 id="频段引导Band-steering"><a href="#频段引导Band-steering" class="headerlink" title="频段引导Band steering"></a>频段引导Band steering</h1><p>当双频客户端第一次启动时，它会在2.4G和5G发送探询请求帧来查找AP。当双频AP听到来自于同一客户端的两个频段的探询请求帧时，便知道客户端能够运行在5G频带。AP将仅响应使用5G频段的客户端，使用这种方法尝试引导客户端使用5G频段。通常情况下，客户端在2.4G和5G频段发送探询请求，但AP只在5G频段进行探询响应。尽管客户端被引导使用5G频段的AP，但仍有客户端使用2.4G频段连接AP。如果客户端持续尝试使用2.4G连接AP，AP最终会允许这个连接。可以查看我另一篇博客：</p>
-<p><a href="http://www.iliuqi.com/2019/08/26/wifi%E5%8F%8C%E9%A2%91%E4%BC%98%E9%80%89/">wifi双频优选</a></p>
+<p><a href="http://www.iliuqi.com/2019/08/26/wifi%E5%8F%8C%E9%A2%91%E4%BC%98%E9%80%89/" target="_blank" rel="noopener">wifi双频优选</a></p>
 <hr>
 <p>注：具体802.11帧格式，建议阅读CWAP，我后续也会继续也这个系列的学习笔记，待阅读后会把笔记链接附在此处。</p>
 
